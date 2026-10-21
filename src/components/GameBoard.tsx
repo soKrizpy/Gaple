@@ -27,6 +27,7 @@ interface GameBoardProps {
   canPlayRight: boolean;
   onPlaceTile: (targetEnd: 'left' | 'right') => void;
   isPortrait: boolean;
+  isCompactHeight?: boolean;
   isGameOver: boolean;
   isDeadlock: boolean;
   isWildcardActive?: boolean;
@@ -42,6 +43,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   canPlayRight,
   onPlaceTile,
   isPortrait,
+  isCompactHeight = false,
   isWildcardActive = false,
   lastPlacedTileId,
 }) => {
@@ -182,7 +184,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div
       id="game-table"
-      className={`relative flex-1 w-full h-full min-h-[300px] overflow-hidden rounded-2xl md:rounded-3xl border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-300 ${
+      className={`relative flex-1 w-full h-full min-h-[140px] sm:min-h-[190px] md:min-h-[250px] lg:min-h-[300px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-300 ${
         isWildcardActive ? 'border-amber-400 ring-4 ring-amber-400/40' : 'border-stone-800'
       }`}
       style={{
@@ -201,10 +203,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       {/* Watermark Logo Meja Domino Gaple Master */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
         <div className="text-center font-serif">
-          <div className="text-4xl sm:text-6xl md:text-7xl tracking-widest font-black text-amber-100 uppercase">
+          <div className="text-2xl sm:text-5xl md:text-7xl tracking-widest font-black text-amber-100 uppercase">
             DOMINO GAPLE MASTER
           </div>
-          <div className="text-xs md:text-sm tracking-widest text-amber-200 mt-2 font-mono">
+          <div className="text-[10px] sm:text-xs md:text-sm tracking-widest text-amber-200 mt-1 sm:mt-2 font-mono">
             POS RONDA WARKOP
           </div>
         </div>
@@ -230,50 +232,50 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
       {/* Toolbar Kontrol Geser Meja & Tombol Pusatkan */}
       {tiles.length > 0 && (
-        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-30 bg-stone-950/85 backdrop-blur-md px-2 py-1.5 rounded-2xl border border-stone-800/90 shadow-2xl">
+        <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 flex items-center gap-1 sm:gap-1.5 z-30 bg-stone-950/85 backdrop-blur-md px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border border-stone-800/90 shadow-2xl">
           {/* Tombol Geser Kiri */}
           <button
             onClick={() => handleNudge('left')}
-            className="p-1.5 rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-amber-300 active:scale-95 transition-all cursor-pointer border border-stone-700/60 shadow-sm"
+            className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-amber-300 active:scale-95 transition-all cursor-pointer border border-stone-700/60 shadow-sm"
             title="Geser Meja ke Kiri"
             aria-label="Geser Meja ke Kiri"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           {/* Tombol Pusatkan ke Batu Terakhir */}
           <button
             onClick={() => centerOnLastTile(true)}
-            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/40 hover:to-amber-500/30 active:scale-95 text-amber-200 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer border border-amber-500/50 shadow-sm"
+            className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/40 hover:to-amber-500/30 active:scale-95 text-amber-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer border border-amber-500/50 shadow-sm"
             title="Pusatkan Layar ke Kartu Terakhir yang Dilempar"
           >
-            <Crosshair className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px] font-semibold">Tengah</span>
+            <Crosshair className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
+            <span className="text-[10px] sm:text-[11px] font-semibold">Tengah</span>
           </button>
 
           {/* Tombol Geser Kanan */}
           <button
             onClick={() => handleNudge('right')}
-            className="p-1.5 rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-amber-300 active:scale-95 transition-all cursor-pointer border border-stone-700/60 shadow-sm"
+            className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-amber-300 active:scale-95 transition-all cursor-pointer border border-stone-700/60 shadow-sm"
             title="Geser Meja ke Kanan"
             aria-label="Geser Meja ke Kanan"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       )}
 
       {/* Floating score text popup container untuk animasi resolusi skor */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 flex items-center gap-3 pointer-events-none z-50">
+      <div className="absolute top-2 sm:top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 pointer-events-none z-50">
         <div
           id="score-chips-popup"
-          className="opacity-0 font-mono font-black text-xl md:text-2xl text-sky-400 drop-shadow-[0_4px_12px_rgba(14,165,233,0.9)] bg-slate-950/90 px-3 py-1 rounded-xl border border-sky-400"
+          className="opacity-0 font-mono font-black text-lg sm:text-xl md:text-2xl text-sky-400 drop-shadow-[0_4px_12px_rgba(14,165,233,0.9)] bg-slate-950/90 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl border border-sky-400"
         >
           +0 Titik
         </div>
         <div
           id="score-mult-popup"
-          className="opacity-0 font-mono font-black text-2xl md:text-3xl text-rose-500 drop-shadow-[0_4px_16px_rgba(244,63,94,0.95)] bg-slate-950/90 px-3 py-1 rounded-xl border border-rose-500"
+          className="opacity-0 font-mono font-black text-xl sm:text-2xl md:text-3xl text-rose-500 drop-shadow-[0_4px_16px_rgba(244,63,94,0.95)] bg-slate-950/90 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl border border-rose-500"
         >
           X0 Pengali
         </div>
@@ -281,23 +283,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
       {/* Papan Meja Kosong: Prompt Awal Letakkan Batu Pertama */}
       {tiles.length === 0 && (
-        <div className="relative z-20 flex flex-col items-center justify-center text-center p-6 max-w-sm">
+        <div className="relative z-20 flex flex-col items-center justify-center text-center p-3 sm:p-6 max-w-sm">
           <div
             id="target-socket-center"
             onClick={() => selectedTile && onPlaceTile('left')}
-            className={`w-28 h-40 sm:w-32 sm:h-44 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all duration-300 ${
+            className={`w-20 h-28 sm:w-28 sm:h-38 md:w-32 md:h-44 rounded-xl sm:rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-2 sm:p-4 transition-all duration-300 ${
               selectedTile
                 ? 'border-amber-400 bg-amber-500/20 text-amber-200 shadow-[0_0_30px_rgba(245,158,11,0.5)] cursor-pointer scale-105 animate-pulse'
                 : 'border-stone-600/70 bg-stone-900/40 text-stone-400'
             }`}
           >
-            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center mb-2">
-              <Play className="w-5 h-5 text-amber-400 ml-0.5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-500/20 flex items-center justify-center mb-1.5 sm:mb-2">
+              <Play className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 ml-0.5" />
             </div>
-            <span className="text-xs font-bold leading-tight">
+            <span className="text-[11px] sm:text-xs font-bold leading-tight">
               {selectedTile ? 'Klik di Sini untuk Mulai Meja' : 'Pilih Batu di Tangan'}
             </span>
-            <span className="text-[10px] text-stone-400 mt-1 font-mono">
+            <span className="text-[9px] sm:text-[10px] text-stone-400 mt-0.5 sm:mt-1 font-mono">
               {selectedTile ? `Batu [${selectedTile.head}-${selectedTile.tail}]` : 'Batu Pertama'}
             </span>
           </div>
@@ -315,22 +317,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleMouseUp}
-          className={`relative z-10 w-full h-full flex items-center overflow-x-auto px-10 sm:px-20 py-6 no-scrollbar touch-pan-x transition-colors duration-150 ${
+          className={`relative z-10 w-full h-full flex items-center overflow-x-auto px-4 sm:px-10 md:px-20 py-2 sm:py-4 md:py-6 no-scrollbar touch-pan-x transition-colors duration-150 ${
             isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         >
-          <div className="flex items-center gap-1 sm:gap-1.5 mx-auto my-auto shrink-0 py-4">
+          <div className="flex items-center gap-1 sm:gap-1.5 mx-auto my-auto shrink-0 py-2 sm:py-4">
             {/* Target Socket Ujung Kiri */}
             {canPlayLeft && selectedTile && (
               <button
                 id="target-socket-left"
                 onClick={() => handleSocketClick('left')}
-                className="w-14 h-24 sm:w-16 sm:h-28 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-500/20 hover:bg-emerald-500/35 flex flex-col items-center justify-center text-emerald-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-pulse shrink-0 active:scale-95 mr-1"
+                className="w-11 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-500/20 hover:bg-emerald-500/35 flex flex-col items-center justify-center text-emerald-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-pulse shrink-0 active:scale-95 mr-1"
                 title={`Pasang di Ujung Kiri (Menyambung Mata ${leftEnd})`}
               >
-                <MoveLeft className="w-5 h-5 text-emerald-300" />
-                <span className="text-[10px] font-black font-mono mt-1">Kiri</span>
-                <span className="text-[9px] font-extrabold text-emerald-200 bg-emerald-950/70 px-1 rounded border border-emerald-500/40 mt-0.5">
+                <MoveLeft className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
+                <span className="text-[9px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kiri</span>
+                <span className="text-[8px] sm:text-[9px] font-extrabold text-emerald-200 bg-emerald-950/70 px-1 rounded border border-emerald-500/40 mt-0.5">
                   Mata {leftEnd}
                 </span>
               </button>
@@ -379,7 +381,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                       head={placed.head}
                       tail={placed.tail}
                       orientation={placed.isDouble ? 'vertical' : 'horizontal'}
-                      size={isPortrait ? 'sm' : 'md'}
+                      size={isPortrait || isCompactHeight ? 'sm' : 'md'}
                       isBoardTile={true}
                     />
 
@@ -402,12 +404,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               <button
                 id="target-socket-right"
                 onClick={() => handleSocketClick('right')}
-                className="w-14 h-24 sm:w-16 sm:h-28 rounded-xl border-2 border-dashed border-sky-400 bg-sky-500/20 hover:bg-sky-500/35 flex flex-col items-center justify-center text-sky-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] animate-pulse shrink-0 active:scale-95 ml-1"
+                className="w-11 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-sky-400 bg-sky-500/20 hover:bg-sky-500/35 flex flex-col items-center justify-center text-sky-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] animate-pulse shrink-0 active:scale-95 ml-1"
                 title={`Pasang di Ujung Kanan (Menyambung Mata ${rightEnd})`}
               >
-                <MoveRight className="w-5 h-5 text-sky-300" />
-                <span className="text-[10px] font-black font-mono mt-1">Kanan</span>
-                <span className="text-[9px] font-extrabold text-sky-200 bg-sky-950/70 px-1 rounded border border-sky-500/40 mt-0.5">
+                <MoveRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-300" />
+                <span className="text-[9px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kanan</span>
+                <span className="text-[8px] sm:text-[9px] font-extrabold text-sky-200 bg-sky-950/70 px-1 rounded border border-sky-500/40 mt-0.5">
                   Mata {rightEnd}
                 </span>
               </button>

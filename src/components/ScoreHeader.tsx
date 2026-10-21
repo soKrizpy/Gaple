@@ -43,7 +43,7 @@ export const ScoreHeader: React.FC<ScoreHeaderProps> = ({
   const progressPercent = Math.min(100, Math.round((posRonda.roundScore / posRonda.targetScore) * 100));
 
   return (
-    <header className="w-full bg-slate-900/95 backdrop-blur-md border-b border-stone-800/80 px-3 sm:px-4 py-2 text-stone-100 flex flex-col gap-1.5 shrink-0 z-30 shadow-md">
+    <header className="w-full bg-slate-900/95 backdrop-blur-md border-b border-stone-800/80 px-2 sm:px-4 py-1 sm:py-2 text-stone-100 flex flex-col gap-1 sm:gap-1.5 shrink-0 z-30 shadow-md">
       {/* Baris 1: Tombol Menu, Indikator Pos Ronda, Target Progress & Dompet Koin */}
       <div className="flex items-center justify-between gap-2">
         {/* Sisi Kiri: Menu & Audio */}
@@ -115,7 +115,7 @@ export const ScoreHeader: React.FC<ScoreHeaderProps> = ({
       </div>
 
       {/* Baris 2: Kuota Pasang, Buang, Rantai & Indikator Titik x Pengali */}
-      <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1 border-t border-stone-800/60 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-1 sm:gap-1.5 pt-0.5 sm:pt-1 border-t border-stone-800/60 text-xs">
         {/* Kuota Giliran Pasang & Buang Batu */}
         <div className="flex items-center gap-2 sm:gap-3 text-[11px]">
           <span className="flex items-center gap-1 text-stone-300 bg-stone-950/60 px-2 py-0.5 rounded-lg border border-stone-800">

@@ -24,6 +24,7 @@ interface ControlDockProps {
   onSortHand: () => void;
   hasValidMove: boolean;
   isPortrait: boolean;
+  isCompactHeight?: boolean;
 }
 
 export const ControlDock: React.FC<ControlDockProps> = ({
@@ -42,6 +43,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   onSortHand,
   hasValidMove,
   isPortrait,
+  isCompactHeight = false,
 }) => {
   const isBoardEmpty = leftEnd === null || rightEnd === null;
 
@@ -58,7 +60,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   const handPipTotal = hand.reduce((acc, t) => acc + t.head + t.tail, 0);
 
   return (
-    <footer className="w-full bg-slate-900/95 backdrop-blur-md border-t border-stone-800 px-3 py-2 flex flex-col gap-2 shrink-0 z-30 shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
+    <footer className="w-full bg-slate-900/95 backdrop-blur-md border-t border-stone-800 px-2 sm:px-3 py-1.5 sm:py-2 flex flex-col gap-1 sm:gap-2 shrink-0 z-30 shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
       {/* Action Bar & Secondary Controls */}
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         {/* Info Tangan */}
@@ -182,7 +184,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
       )}
 
       {/* Barisan 7 Batu Domino di Tangan Pemain */}
-      <div className="w-full flex items-center justify-center overflow-x-auto py-1 px-2 no-scrollbar min-h-[95px]">
+      <div className="w-full flex items-center justify-center overflow-x-auto py-0.5 sm:py-1 px-1 sm:px-2 no-scrollbar min-h-[72px] sm:min-h-[92px]">
         <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full">
           {hand.map((tile) => {
             const playable = isTilePlayable(tile);
@@ -197,7 +199,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                 <DominoTile
                   domino={tile}
                   orientation="vertical"
-                  size={isPortrait ? 'sm' : 'md'}
+                  size={isPortrait || isCompactHeight ? 'sm' : 'md'}
                   isPlayable={playable}
                   isSelected={isSelected}
                   onClick={() => onSelectTile(tile)}

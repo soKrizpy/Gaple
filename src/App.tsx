@@ -52,10 +52,16 @@ export default function App() {
   const [screen, setScreen] = useState<'main_menu' | 'game'>('main_menu');
   const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
 
-  // Responsiveness: Portrait / Landscape
+  // Responsiveness: Portrait / Landscape & Layar Tinggi Terbatas (Compact Height)
   const [isPortrait, setIsPortrait] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return window.innerHeight > window.innerWidth;
+    }
+    return false;
+  });
+  const [isCompactHeight, setIsCompactHeight] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerHeight < 720;
     }
     return false;
   });
@@ -137,6 +143,7 @@ export default function App() {
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.innerHeight > window.innerWidth);
+      setIsCompactHeight(window.innerHeight < 720);
     };
 
     window.addEventListener('resize', handleResize);
@@ -766,7 +773,7 @@ export default function App() {
   // SCREEN 2: GAMEPLAY UTAMA (Minimalis & Bebas Clutter)
   // =========================================================================
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 font-sans text-stone-100 select-none">
+    <div className="flex flex-col h-screen h-[100dvh] w-screen overflow-hidden bg-slate-950 font-sans text-stone-100 select-none">
       {/* Bagian Atas (HUD): Hanya Target Skor, Skor Saat Ini, Pos Ronda, Sisa Pasang, Sisa Buang, dan Koin */}
       <ScoreHeader
         score={score}
@@ -815,7 +822,7 @@ export default function App() {
       )}
 
       {/* Bagian Tengah (Papan Meja): Jalur Rantai Domino Rapi (Horizontal Scroll) */}
-      <main className="flex-1 relative flex flex-col p-2 md:p-3 overflow-hidden min-h-0">
+      <main className="flex-1 relative flex flex-col p-1.5 sm:p-2 md:p-3 overflow-hidden min-h-0">
         <GameBoard
           tiles={placedTiles}
           leftEnd={leftEnd}
@@ -825,6 +832,7 @@ export default function App() {
           canPlayRight={canPlayRight}
           onPlaceTile={handlePlaceTile}
           isPortrait={isPortrait}
+          isCompactHeight={isCompactHeight}
           isGameOver={isGameOver}
           isDeadlock={isDeadlock}
           isWildcardActive={posRonda.wildcardActive}
@@ -852,6 +860,7 @@ export default function App() {
         onSortHand={handleSortHand}
         hasValidMove={hasValidMove}
         isPortrait={isPortrait}
+        isCompactHeight={isCompactHeight}
       />
 
       {/* ========================================================================= */}
