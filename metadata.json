@@ -1,0 +1,6 @@
+{
+  "name": "Domino Gaple Master",
+  "description": "Game Domino Gaple modern dengan kontrol sentuh responsif, papan meja adaptif, grafis batu elegan, sistem jimat warkop, dan sambungan rantai batu otomatis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
