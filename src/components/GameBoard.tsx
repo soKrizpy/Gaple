@@ -17,6 +17,7 @@ import {
   Crosshair,
   Hand,
 } from 'lucide-react';
+import { sounds } from '../utils/soundEffects';
 
 interface GameBoardProps {
   tiles: PlacedTile[];
@@ -32,6 +33,8 @@ interface GameBoardProps {
   isDeadlock: boolean;
   isWildcardActive?: boolean;
   lastPlacedTileId?: string | null;
+  chips?: number;
+  mult?: number;
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({
@@ -46,6 +49,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   isCompactHeight = false,
   isWildcardActive = false,
   lastPlacedTileId,
+  chips,
+  mult,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -108,6 +113,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   // Tombol navigasi manual geser meja (Nudge)
   const handleNudge = (direction: 'left' | 'right') => {
+    sounds.playTileClack();
     const container = scrollContainerRef.current;
     if (!container) return;
     const distance = 240;
@@ -178,6 +184,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const handleSocketClick = (targetEnd: 'left' | 'right') => {
     // Cegah pemasangan batu jika baru saja melakukan aksi geser meja
     if (hasMovedSignificantlyRef.current) return;
+    sounds.playTileClack();
     onPlaceTile(targetEnd);
   };
 
@@ -212,9 +219,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
+      {/* Indikator Titik dan Pengali di Atas Meja (Mudah Dilihat Pemain) */}
+      {chips !== undefined && mult !== undefined && (
+        <div className="absolute top-2 sm:top-2.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex items-center gap-1.5 sm:gap-2.5 bg-stone-950/90 backdrop-blur-md px-3 sm:px-4 py-1 sm:py-1.5 rounded-2xl border border-stone-700/80 shadow-[0_4px_25px_rgba(0,0,0,0.85)]">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] sm:text-xs font-black tracking-wider text-sky-400">TITIK</span>
+            <span className="font-mono font-black text-sky-300 text-xs sm:text-sm px-2 py-0.5 rounded-lg bg-sky-950/90 border border-sky-500/40">
+              {chips}
+            </span>
+          </div>
+          <span className="text-amber-400 font-black text-xs sm:text-sm">×</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] sm:text-xs font-black tracking-wider text-rose-500">PENGALI</span>
+            <span className="font-mono font-black text-rose-400 text-xs sm:text-sm px-2 py-0.5 rounded-lg bg-rose-950/90 border border-rose-500/40">
+              {mult}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Notifikasi Wildcard Kipas Sate Aktif */}
       {isWildcardActive && (
-        <div className="absolute top-3 inset-x-0 flex justify-center pointer-events-none z-30">
+        <div className="absolute top-10 sm:top-12 inset-x-0 flex justify-center pointer-events-none z-30">
           <div className="bg-amber-500/95 text-slate-950 font-black text-xs px-3.5 py-1 rounded-full shadow-lg border border-yellow-300 flex items-center gap-1.5 animate-pulse">
             <Sparkles className="w-3.5 h-3.5 fill-slate-950" />
             <span>WILDCARD KIPAS SATE AKTIF: Sambung Bebas ke Ujung Mana Pun!</span>
@@ -226,7 +252,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       {tiles.length > 1 && (
         <div className="absolute top-3 left-3 z-30 pointer-events-none hidden sm:flex items-center gap-1.5 bg-stone-950/75 backdrop-blur-md text-amber-200/90 text-[11px] px-3 py-1.5 rounded-full border border-stone-800 shadow-md">
           <Hand className="w-3.5 h-3.5 text-amber-400" />
-          <span>Geser meja untuk melihat seluruh susunan batu</span>
+          <span>Geser meja untuk melihat susunan kartu</span>
         </div>
       )}
 
@@ -245,7 +271,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
           {/* Tombol Pusatkan ke Batu Terakhir */}
           <button
-            onClick={() => centerOnLastTile(true)}
+            onClick={() => {
+              sounds.playTileClack();
+              centerOnLastTile(true);
+            }}
             className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/40 hover:to-amber-500/30 active:scale-95 text-amber-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer border border-amber-500/50 shadow-sm"
             title="Pusatkan Layar ke Kartu Terakhir yang Dilempar"
           >
@@ -286,7 +315,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         <div className="relative z-20 flex flex-col items-center justify-center text-center p-3 sm:p-6 max-w-sm">
           <div
             id="target-socket-center"
-            onClick={() => selectedTile && onPlaceTile('left')}
+            onClick={() => {
+              if (selectedTile) {
+                sounds.playTileClack();
+                onPlaceTile('left');
+              }
+            }}
             className={`w-20 h-28 sm:w-28 sm:h-38 md:w-32 md:h-44 rounded-xl sm:rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-2 sm:p-4 transition-all duration-300 ${
               selectedTile
                 ? 'border-amber-400 bg-amber-500/20 text-amber-200 shadow-[0_0_30px_rgba(245,158,11,0.5)] cursor-pointer scale-105 animate-pulse'
@@ -385,13 +419,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                       isBoardTile={true}
                     />
 
-                    {/* Badge Penanda Batu Terakhir yang Baru Dilempar */}
+                    {/* Penanda Batu Terakhir yang Baru Dilempar: Cukup Ikon Api Naik Turun */}
                     {isThisTileLastPlaced && (
-                      <div className="absolute -top-2.5 inset-x-0 flex justify-center pointer-events-none z-30">
-                        <span className="bg-amber-500 text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-full border border-yellow-200 shadow flex items-center gap-0.5 animate-pulse">
-                          <Flame className="w-2.5 h-2.5 fill-slate-950" />
-                          Terbaru
-                        </span>
+                      <div className="absolute -top-3.5 inset-x-0 flex justify-center pointer-events-none z-30 animate-bounce">
+                        <div className="bg-gradient-to-t from-amber-600 via-amber-500 to-yellow-300 p-1 rounded-full border border-yellow-200 shadow-[0_0_14px_rgba(245,158,11,0.9)] flex items-center justify-center">
+                          <Flame className="w-3.5 h-3.5 text-slate-950 fill-amber-100" />
+                        </div>
                       </div>
                     )}
                   </div>

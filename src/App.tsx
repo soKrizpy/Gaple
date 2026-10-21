@@ -837,10 +837,12 @@ export default function App() {
           isDeadlock={isDeadlock}
           isWildcardActive={posRonda.wildcardActive}
           lastPlacedTileId={lastPlacedTileId}
+          chips={currentChips}
+          mult={currentMult}
         />
       </main>
 
-      {/* Bagian Bawah: Hanya Deretan 7 Batu Domino di Tangan, Buang Terpilih, & Kunci Meja (Gaple) */}
+      {/* Bagian Bawah: Meja Bawah (Status Pasang, Buang, Rantai, Tangan, dan Aksi Chain) */}
       <ControlDock
         hand={hand}
         selectedTile={selectedTile}
@@ -850,6 +852,13 @@ export default function App() {
         canPlayRight={canPlayRight}
         discardsLeft={posRonda.discardsLeft}
         playsLeft={posRonda.playsLeft}
+        streak={posRonda.streak}
+        chips={currentChips}
+        mult={currentMult}
+        wildcardActive={posRonda.wildcardActive}
+        wildcardUsedThisRound={posRonda.wildcardUsedThisRound}
+        onToggleWildcard={handleToggleWildcard}
+        hasKipasSate={activeRelics.some((r) => r.id === 'jimat_kipas')}
         onSelectTile={(tile) => {
           sounds.playTileClack();
           setSelectedTile(selectedTile?.id === tile.id ? null : tile);
