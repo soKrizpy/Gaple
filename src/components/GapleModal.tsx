@@ -240,17 +240,6 @@ export const GapleModal: React.FC<ResultModalProps> = ({
             </button>
           )}
 
-          {/* Lihat Papan Skor & Bagikan ke Medsos */}
-          {onOpenLeaderboard && (
-            <button
-              onClick={onOpenLeaderboard}
-              className="w-full py-2.5 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer border border-amber-500/40 shadow-sm"
-            >
-              <Trophy className="w-4 h-4 text-amber-400" />
-              <span>Lihat Papan Skor & Share Medsos</span>
-            </button>
-          )}
-
           {/* Kembali ke Menu Utama */}
           {onReturnToMainMenu && (
             <button
