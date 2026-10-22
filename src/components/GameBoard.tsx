@@ -191,7 +191,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div
       id="game-table"
-      className={`relative flex-1 w-full h-full min-h-[140px] sm:min-h-[190px] md:min-h-[250px] lg:min-h-[300px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-300 ${
+      className={`GameBoard relative flex-1 w-full h-full min-h-[calc(100dvh-330px)] sm:min-h-[calc(100dvh-280px)] md:min-h-[260px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-500 ease-in-out ${
         isWildcardActive ? 'border-amber-400 ring-4 ring-amber-400/40' : 'border-stone-800'
       }`}
       style={{
@@ -207,11 +207,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }}
       />
 
-      {/* Watermark Logo Meja Domino Gaple Master */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
-        <div className="text-center font-serif">
+      {/* Watermark Logo Meja Balakutak Master */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
+        <div className="text-center font-serif flex flex-col items-center">
           <div className="text-2xl sm:text-5xl md:text-7xl tracking-widest font-black text-amber-100 uppercase">
-            DOMINO GAPLE MASTER
+            BALAKUTAK MASTER
           </div>
           <div className="text-[10px] sm:text-xs md:text-sm tracking-widest text-amber-200 mt-1 sm:mt-2 font-mono">
             POS RONDA WARKOP
@@ -312,7 +312,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
       {/* Papan Meja Kosong: Prompt Awal Letakkan Batu Pertama */}
       {tiles.length === 0 && (
-        <div className="relative z-20 flex flex-col items-center justify-center text-center p-3 sm:p-6 max-w-sm">
+        <div className="relative z-20 flex flex-col items-center justify-center text-center p-2 sm:p-6 max-w-sm">
           <div
             id="target-socket-center"
             onClick={() => {
@@ -321,20 +321,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 onPlaceTile('left');
               }
             }}
-            className={`w-20 h-28 sm:w-28 sm:h-38 md:w-32 md:h-44 rounded-xl sm:rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-2 sm:p-4 transition-all duration-300 ${
+            className={`w-16 h-22 sm:w-28 sm:h-38 md:w-32 md:h-44 rounded-xl sm:rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 sm:p-4 transition-all duration-300 ${
               selectedTile
                 ? 'border-amber-400 bg-amber-500/20 text-amber-200 shadow-[0_0_30px_rgba(245,158,11,0.5)] cursor-pointer scale-105 animate-pulse'
                 : 'border-stone-600/70 bg-stone-900/40 text-stone-400'
             }`}
           >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-500/20 flex items-center justify-center mb-1.5 sm:mb-2">
-              <Play className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 ml-0.5" />
+            <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-amber-500/20 flex items-center justify-center mb-1 sm:mb-2">
+              <Play className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-amber-400 ml-0.5" />
             </div>
-            <span className="text-[11px] sm:text-xs font-bold leading-tight">
-              {selectedTile ? 'Klik di Sini untuk Mulai Meja' : 'Pilih Batu di Tangan'}
+            <span className="text-[10px] sm:text-xs font-bold leading-tight">
+              {selectedTile ? 'Klik Mulai Meja' : 'Pilih Batu'}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-stone-400 mt-0.5 sm:mt-1 font-mono">
-              {selectedTile ? `Batu [${selectedTile.head}-${selectedTile.tail}]` : 'Batu Pertama'}
+            <span className="text-[8px] sm:text-[10px] text-stone-400 mt-0.5 sm:mt-1 font-mono">
+              {selectedTile ? `[${selectedTile.head}-${selectedTile.tail}]` : 'Batu Pertama'}
             </span>
           </div>
         </div>
@@ -351,22 +351,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleMouseUp}
-          className={`relative z-10 w-full h-full flex items-center overflow-x-auto px-4 sm:px-10 md:px-20 py-2 sm:py-4 md:py-6 no-scrollbar touch-pan-x transition-colors duration-150 ${
+          className={`relative z-10 w-full h-full flex items-center overflow-x-auto px-3 sm:px-10 md:px-20 py-1 sm:py-3 md:py-6 no-scrollbar touch-pan-x transition-colors duration-150 ${
             isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         >
-          <div className="flex items-center gap-1 sm:gap-1.5 mx-auto my-auto shrink-0 py-2 sm:py-4">
+          <div className="flex items-center gap-1 sm:gap-1.5 mx-auto my-auto shrink-0 py-1 sm:py-3">
             {/* Target Socket Ujung Kiri */}
             {canPlayLeft && selectedTile && (
               <button
                 id="target-socket-left"
                 onClick={() => handleSocketClick('left')}
-                className="w-11 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-500/20 hover:bg-emerald-500/35 flex flex-col items-center justify-center text-emerald-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-pulse shrink-0 active:scale-95 mr-1"
+                className="w-10 h-16 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-500/20 hover:bg-emerald-500/35 flex flex-col items-center justify-center text-emerald-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-pulse shrink-0 active:scale-95 mr-1"
                 title={`Pasang di Ujung Kiri (Menyambung Mata ${leftEnd})`}
               >
-                <MoveLeft className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
-                <span className="text-[9px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kiri</span>
-                <span className="text-[8px] sm:text-[9px] font-extrabold text-emerald-200 bg-emerald-950/70 px-1 rounded border border-emerald-500/40 mt-0.5">
+                <MoveLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-emerald-300" />
+                <span className="text-[8px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kiri</span>
+                <span className="text-[7px] sm:text-[9px] font-extrabold text-emerald-200 bg-emerald-950/70 px-1 rounded border border-emerald-500/40 mt-0.5">
                   Mata {leftEnd}
                 </span>
               </button>
@@ -401,12 +401,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     </div>
                   )}
 
-                  {/* Kontainer Batu Domino di Meja */}
+                  {/* Kontainer Batu Domino di Meja (dengan Transisi Transparan Halus saat Mendarat) */}
                   <div
                     id={`placed-tile-${placed.id}`}
                     className={`transition-all duration-300 shrink-0 shadow-xl rounded-xl relative ${
                       isThisTileLastPlaced
-                        ? 'ring-2 ring-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.7)] z-10 scale-105'
+                        ? 'ring-2 ring-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.7)] z-10 scale-105 tile-land-transition'
                         : ''
                     }`}
                   >
@@ -437,12 +437,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               <button
                 id="target-socket-right"
                 onClick={() => handleSocketClick('right')}
-                className="w-11 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-sky-400 bg-sky-500/20 hover:bg-sky-500/35 flex flex-col items-center justify-center text-sky-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] animate-pulse shrink-0 active:scale-95 ml-1"
+                className="w-10 h-16 sm:w-14 sm:h-24 md:w-16 md:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-sky-400 bg-sky-500/20 hover:bg-sky-500/35 flex flex-col items-center justify-center text-sky-300 transition-all cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] animate-pulse shrink-0 active:scale-95 ml-1"
                 title={`Pasang di Ujung Kanan (Menyambung Mata ${rightEnd})`}
               >
-                <MoveRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-300" />
-                <span className="text-[9px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kanan</span>
-                <span className="text-[8px] sm:text-[9px] font-extrabold text-sky-200 bg-sky-950/70 px-1 rounded border border-sky-500/40 mt-0.5">
+                <MoveRight className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-sky-300" />
+                <span className="text-[8px] sm:text-[10px] font-black font-mono mt-0.5 sm:mt-1">Kanan</span>
+                <span className="text-[7px] sm:text-[9px] font-extrabold text-sky-200 bg-sky-950/70 px-1 rounded border border-sky-500/40 mt-0.5">
                   Mata {rightEnd}
                 </span>
               </button>

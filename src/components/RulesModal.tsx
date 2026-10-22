@@ -28,7 +28,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between pb-2 border-b border-stone-800">
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-amber-400" />
-            <h2 className="text-lg font-bold text-amber-300">Panduan & Aturan Gaple Pos Ronda</h2>
+            <h2 className="text-lg font-bold text-amber-300">Panduan & Aturan Balakutak Master</h2>
           </div>
           <button
             onClick={onClose}

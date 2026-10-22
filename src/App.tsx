@@ -46,10 +46,13 @@ import { RulesModal } from './components/RulesModal';
 import { PauseModal } from './components/PauseModal';
 import { DailyMissionsModal } from './components/DailyMissionsModal';
 import { RewardedAdModal } from './components/RewardedAdModal';
+import { LeaderboardPage } from './components/LeaderboardPage';
+import { recordLeaderboardScore } from './services/leaderboardService';
 
 export default function App() {
-  // Screen State Machine: 'main_menu' atau 'game'
-  const [screen, setScreen] = useState<'main_menu' | 'game'>('main_menu');
+  // Screen State Machine: 'main_menu', 'game', atau 'leaderboard'
+  const [screen, setScreen] = useState<'main_menu' | 'game' | 'leaderboard'>('main_menu');
+  const previousScreenRef = useRef<'main_menu' | 'game'>('main_menu');
   const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
 
   // Responsiveness: Portrait / Landscape & Layar Tinggi Terbatas (Compact Height)
@@ -280,9 +283,26 @@ export default function App() {
         setRoundCoinsEarned(0);
         setRelicChoices([]);
       }
+
+      // Catat ke Papan Skor (Leaderboard)
+      recordLeaderboardScore({
+        score: finalScore,
+        roundReached: finalPosRonda.currentRound,
+        streak: finalPosRonda.streak,
+        favRelicName: activeRelics[0]?.name,
+      });
     },
     [activeRelics, recordMission, rollShopRelics]
   );
+
+  // Navigasi Buka Halaman Leaderboard
+  const handleOpenLeaderboard = () => {
+    sounds.playTileClack();
+    if (screen !== 'leaderboard') {
+      previousScreenRef.current = screen;
+    }
+    setScreen('leaderboard');
+  };
 
   // Aksi Memasang Batu Domino ke Meja
   const handlePlaceTile = (targetEnd: 'left' | 'right') => {
@@ -725,9 +745,11 @@ export default function App() {
     }
   };
 
-  // Mulai Babak Berikutnya dari Toko
+  // Mulai Babak Berikutnya (Pos Ronda bertambah otomatis: 1 -> 2 -> 3 dst)
   const handleProceedNextRound = () => {
     setIsShopOpen(false);
+    setIsGameOver(false);
+    sounds.playVictory();
     initGame(posRonda.currentRound + 1);
   };
 
@@ -741,6 +763,7 @@ export default function App() {
           onStartGame={handleStartGame}
           onOpenRules={() => setIsRulesOpen(true)}
           onOpenMissions={() => setIsMissionsOpen(true)}
+          onOpenLeaderboard={handleOpenLeaderboard}
           unclaimedMissionsCount={unclaimedMissionsCount}
           coins={coins}
           isMuted={isMuted}
@@ -770,7 +793,20 @@ export default function App() {
   }
 
   // =========================================================================
-  // SCREEN 2: GAMEPLAY UTAMA (Minimalis & Bebas Clutter)
+  // SCREEN 2: PAPAN SKOR & KLASEMEN (LEADERBOARD PAGE)
+  // =========================================================================
+  if (screen === 'leaderboard') {
+    return (
+      <LeaderboardPage
+        onBack={() => setScreen(previousScreenRef.current || 'main_menu')}
+        currentScore={score}
+        currentRound={posRonda.currentRound}
+      />
+    );
+  }
+
+  // =========================================================================
+  // SCREEN 3: GAMEPLAY UTAMA (Minimalis & Bebas Clutter)
   // =========================================================================
   return (
     <div className="flex flex-col h-screen h-[100dvh] w-screen overflow-hidden bg-slate-950 font-sans text-stone-100 select-none">
@@ -821,8 +857,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Bagian Tengah (Papan Meja): Jalur Rantai Domino Rapi (Horizontal Scroll) */}
-      <main className="flex-1 relative flex flex-col p-1.5 sm:p-2 md:p-3 overflow-hidden min-h-0">
+      {/* Bagian Tengah (Papan Meja): Jalur Rantai Domino Rapi (Responsif & Proporsional di Layar HP) */}
+      <main className="relative flex flex-col p-1 sm:p-1.5 md:p-2.5 overflow-hidden flex-1 min-h-[calc(100dvh-330px)] sm:min-h-0 shrink-0 sm:shrink transition-all duration-500 ease-in-out">
         <GameBoard
           tiles={placedTiles}
           leftEnd={leftEnd}
@@ -883,6 +919,10 @@ export default function App() {
         onRestartRound={handleRestartRound}
         onReturnToMainMenu={handleReturnToMainMenu}
         onOpenRules={() => setIsRulesOpen(true)}
+        onOpenLeaderboard={() => {
+          setIsPauseOpen(false);
+          handleOpenLeaderboard();
+        }}
         currentRound={posRonda.currentRound}
         isMuted={isMuted}
         onToggleMute={() => {
@@ -899,8 +939,12 @@ export default function App() {
         availableRelicChoices={relicChoices}
         onSelectRelic={handleSelectRelic}
         onNextRound={() => {
-          setScore(0);
-          initGame(1);
+          if (posRonda.roundScore >= posRonda.targetScore) {
+            handleProceedNextRound();
+          } else {
+            setScore(0);
+            initGame(1);
+          }
         }}
         posRonda={posRonda}
         gapleExplosionData={gapleExplosionData}
@@ -909,6 +953,10 @@ export default function App() {
         onOpenShop={() => {
           setIsGameOver(false);
           setIsShopOpen(true);
+        }}
+        onOpenLeaderboard={() => {
+          setIsGameOver(false);
+          handleOpenLeaderboard();
         }}
         onReturnToMainMenu={handleReturnToMainMenu}
         handRemaining={hand}

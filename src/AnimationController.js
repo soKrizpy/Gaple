@@ -179,13 +179,13 @@ export function animateTilePlacementFlight({ tile, startRect, targetRect, target
       // Sound of slam
       sounds.playTileSlam();
 
-      // Screen shake on board container
+      // Gentle screen shake on board container
       const boardContainer = document.querySelector('#game-table') || document.querySelector('.game-board-container');
       if (boardContainer) {
         animate(boardContainer, {
-          translateX: [0, -7, 7, -5, 5, -2, 2, 0],
-          translateY: [0, 5, -5, 3, -3, 0],
-          duration: 260,
+          translateX: [0, -3, 3, -1, 1, 0],
+          translateY: [0, 2, -2, 1, 0],
+          duration: 200,
           ease: 'outQuad',
         });
       }
@@ -193,7 +193,7 @@ export function animateTilePlacementFlight({ tile, startRect, targetRect, target
       // Haptic
       try {
         if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-          navigator.vibrate(30);
+          navigator.vibrate(25);
         }
       } catch {
         // ignore
@@ -210,20 +210,29 @@ export function animateTilePlacementFlight({ tile, startRect, targetRect, target
 
       animate(ripple, {
         scale: [0.5, 2.2],
-        opacity: [1, 0],
-        duration: 300,
+        opacity: [0.8, 0],
+        duration: 280,
         ease: 'outQuad',
         onComplete: () => {
           if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
         }
       });
 
-      // Remove flyer
-      if (flyer.parentNode) flyer.parentNode.removeChild(flyer);
-
+      // Mount placed tile with smooth state transition
       if (typeof onComplete === 'function') {
         onComplete();
       }
+
+      // Transisi transparan halus saat mendarat agar tidak mendominasi layar secara tiba-tiba
+      animate(flyer, {
+        opacity: [1, 0],
+        scale: [1, 1.03],
+        duration: 180,
+        ease: 'outQuad',
+        onComplete: () => {
+          if (flyer.parentNode) flyer.parentNode.removeChild(flyer);
+        }
+      });
     }
   });
 }

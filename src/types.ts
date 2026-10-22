@@ -90,3 +90,25 @@ export interface ScorePopupData {
   y: number;
   relicsTriggered: string[];
 }
+
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  score: number;
+  roundReached: number;
+  streak: number;
+  timestamp: number;
+  title: string; // e.g. "Jawara Pos Ronda", "Master Gaple Balak", "Sesepuh Warkop"
+  avatar: string;
+  isCurrentPlayer?: boolean;
+  favRelic?: string;
+}
+
+export interface PlayerProfile {
+  nickname: string;
+  highScore: number;
+  highestRound: number;
+  highestStreak: number;
+  gamesPlayed: number;
+}
+

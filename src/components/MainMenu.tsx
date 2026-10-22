@@ -13,12 +13,14 @@ import {
   Coins,
   Sparkles,
   Flame,
+  Trophy,
 } from 'lucide-react';
 
 interface MainMenuProps {
   onStartGame: () => void;
   onOpenRules: () => void;
   onOpenMissions: () => void;
+  onOpenLeaderboard: () => void;
   unclaimedMissionsCount: number;
   coins: number;
   isMuted: boolean;
@@ -29,6 +31,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onStartGame,
   onOpenRules,
   onOpenMissions,
+  onOpenLeaderboard,
   unclaimedMissionsCount,
   coins,
   isMuted,
@@ -42,12 +45,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
       {/* Top Header Bar: Clean & Minimalist */}
       <header className="relative z-10 w-full max-w-4xl mx-auto px-4 py-3 flex items-center justify-between border-b border-stone-800/80 bg-slate-950/70 backdrop-blur-md">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 flex items-center justify-center font-black text-slate-950 text-base shadow-md">
-            🀄
-          </div>
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/src/assets/images/balakutak_master_logo_1792665905566.jpg"
+            alt="Balakutak Master Logo"
+            className="w-9 h-9 rounded-xl object-cover border border-amber-400/70 shadow-md ring-2 ring-amber-500/30"
+            referrerPolicy="no-referrer"
+          />
           <span className="font-extrabold text-sm tracking-wider text-amber-200 uppercase">
-            Domino Gaple Master
+            Balakutak Master
           </span>
         </div>
 
@@ -58,6 +64,16 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             <Coins className="w-4 h-4 text-amber-400" />
             <span className="font-mono font-black text-xs md:text-sm">{coins.toLocaleString('id-ID')}</span>
           </div>
+
+          {/* Papan Skor Button */}
+          <button
+            onClick={onOpenLeaderboard}
+            title="Papan Skor & Klasemen Juara"
+            className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
+          >
+            <Trophy className="w-4 h-4 text-amber-400" />
+            <span className="hidden sm:inline">Papan Skor</span>
+          </button>
 
           {/* Misi Harian Button with Notification Badge */}
           <button
@@ -85,20 +101,36 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       </header>
 
       {/* Main Center Content: Title & Core Action Buttons */}
-      <main className="relative z-10 flex-1 w-full max-w-md mx-auto px-6 flex flex-col items-center justify-center text-center gap-6 py-8">
-        {/* Logo & Decorative Domino */}
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wide">
+      <main className="relative z-10 flex-1 w-full max-w-md mx-auto px-6 flex flex-col items-center justify-center text-center gap-5 py-6">
+        {/* Engaging Mascot Icon Logo & Title */}
+        <div className="space-y-2.5 flex flex-col items-center">
+          {/* Engaging Mascot Logo */}
+          <div className="relative group cursor-pointer transition-transform hover:scale-105 active:scale-95 duration-300">
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-emerald-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity animate-pulse pointer-events-none" />
+            <img
+              src="/src/assets/images/balakutak_master_logo_1792665905566.jpg"
+              alt="Logo Balakutak Master"
+              className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-amber-300/80 shadow-[0_0_35px_rgba(245,158,11,0.65)] ring-4 ring-amber-500/40"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute -bottom-2 inset-x-0 flex justify-center">
+              <span className="bg-slate-950 text-amber-300 text-[10px] sm:text-xs font-black px-3 py-0.5 rounded-full border border-amber-500/70 shadow-lg tracking-wider uppercase">
+                EDISI POS RONDA
+              </span>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wide mt-2">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            Tantangan Solo Pos Ronda Warkop
+            Tantangan Solo Gaple Warkop
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-100 via-amber-200 to-yellow-500 tracking-tight leading-tight">
-            DOMINO GAPLE MASTER
+            BALAKUTAK MASTER
           </h1>
 
           <p className="text-xs md:text-sm text-stone-400 max-w-xs mx-auto leading-relaxed">
-            Rangkai batu domino dengan sambungan mata yang cocok, manfaatkan kelipatan <span className="text-sky-300 font-bold">Titik Batu</span> × <span className="text-rose-400 font-bold">Pengali Sambungan</span>, koleksi Jimat Warkop, dan capai target skor setiap babak!
+            Rangkai batu domino dengan sambungan mata yang cocok, manfaatkan kelipatan <span className="text-sky-300 font-bold">Titik Batu</span> × <span className="text-rose-400 font-bold">Pengali Sambungan</span>, koleksi Jimat Warkop, dan jadilah <strong>Balakutak Master</strong> sejati!
           </p>
         </div>
 
@@ -111,6 +143,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           >
             <Play className="w-6 h-6 fill-slate-950" />
             MULAI MAIN
+          </button>
+
+          {/* Tombol Papan Skor & Klasemen Ronda */}
+          <button
+            onClick={onOpenLeaderboard}
+            className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-amber-600/30 via-stone-900 to-amber-500/20 hover:from-amber-600/40 hover:to-amber-500/30 border border-amber-500/60 text-amber-200 font-extrabold text-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.99] shadow-md"
+          >
+            <Trophy className="w-4 h-4 text-amber-400" />
+            <span>Papan Skor & Klasemen Juara</span>
           </button>
 
           {/* Tombol Cara Main */}
@@ -136,7 +177,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       {/* Footer Info Versi */}
       <footer className="relative z-10 w-full text-center py-4 text-xs text-stone-500 border-t border-stone-900 bg-slate-950/80">
         <p className="font-mono text-[11px] text-stone-500">
-          Domino Gaple Master · Edisi Pos Ronda Warkop
+          Balakutak Master · Edisi Pos Ronda Warkop
         </p>
       </footer>
     </div>

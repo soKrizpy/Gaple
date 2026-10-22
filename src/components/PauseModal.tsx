@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Play, RotateCcw, Home, BookOpen, Volume2, VolumeX, X } from 'lucide-react';
+import { Play, RotateCcw, Home, BookOpen, Volume2, VolumeX, X, Trophy } from 'lucide-react';
 import { animateModalOpen } from '../AnimationController.js';
 
 interface PauseModalProps {
@@ -13,6 +13,7 @@ interface PauseModalProps {
   onRestartRound: () => void;
   onReturnToMainMenu: () => void;
   onOpenRules: () => void;
+  onOpenLeaderboard: () => void;
   currentRound: number;
   isMuted: boolean;
   onToggleMute: () => void;
@@ -24,6 +25,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
   onRestartRound,
   onReturnToMainMenu,
   onOpenRules,
+  onOpenLeaderboard,
   currentRound,
   isMuted,
   onToggleMute,
@@ -79,6 +81,18 @@ export const PauseModal: React.FC<PauseModalProps> = ({
           >
             <RotateCcw className="w-4 h-4 text-amber-400" />
             Ulangi Babak Ini
+          </button>
+
+          {/* Papan Skor & Klasemen */}
+          <button
+            onClick={() => {
+              onClose();
+              onOpenLeaderboard();
+            }}
+            className="w-full py-2.5 px-4 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer border border-amber-500/40 active:scale-98 shadow-sm"
+          >
+            <Trophy className="w-4 h-4 text-amber-400" />
+            Papan Skor & Klasemen
           </button>
 
           {/* Panduan Aturan */}

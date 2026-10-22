@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Relic, PosRondaState, Domino } from '../types';
-import { Trophy, Sparkles, RefreshCw, Flame, ArrowRight, Video, Store, Coins, Home, ShieldAlert } from 'lucide-react';
+import { Trophy, Sparkles, RefreshCw, Flame, ArrowRight, Video, Store, Coins, Home, ShieldAlert, Share2 } from 'lucide-react';
 import { DominoTile } from './DominoTile';
 import { animateModalOpen } from '../AnimationController.js';
 
@@ -25,6 +25,7 @@ interface ResultModalProps {
   coinsEarned?: number;
   onReviveWithAd?: () => void;
   onOpenShop?: () => void;
+  onOpenLeaderboard?: () => void;
   onReturnToMainMenu?: () => void;
   handRemaining?: Domino[];
 }
@@ -41,6 +42,7 @@ export const GapleModal: React.FC<ResultModalProps> = ({
   coinsEarned = 0,
   onReviveWithAd,
   onOpenShop,
+  onOpenLeaderboard,
   onReturnToMainMenu,
   handRemaining = [],
 }) => {
@@ -194,15 +196,25 @@ export const GapleModal: React.FC<ResultModalProps> = ({
 
         {/* Tombol Aksi Bawah */}
         <div className="flex flex-col gap-2 mt-1">
-          {/* Menang: Tombol Masuk Toko Ronda */}
+          {/* Menang: Tombol Lanjut Langsung ke Babak Berikutnya */}
+          {isTargetAchieved && onNextRound && (
+            <button
+              onClick={onNextRound}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Lanjut ke Pos Ronda {posRonda.currentRound + 1}</span>
+              <ArrowRight className="w-5 h-5 text-slate-950" />
+            </button>
+          )}
+
+          {/* Menang: Opsi Mengunjungi Toko Ronda Terlebih Dahulu */}
           {isTargetAchieved && onOpenShop && (
             <button
               onClick={onOpenShop}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Store className="w-5 h-5 text-slate-950" />
-              <span>Masuk Toko Ronda</span>
-              <ArrowRight className="w-5 h-5 text-slate-950" />
+              <Store className="w-4 h-4 text-amber-400" />
+              <span>Kunjungi Toko Ronda Terlebih Dahulu</span>
             </button>
           )}
 
@@ -225,6 +237,17 @@ export const GapleModal: React.FC<ResultModalProps> = ({
             >
               <RefreshCw className="w-4 h-4 text-amber-400" />
               <span>Coba Lagi dari Pos 1</span>
+            </button>
+          )}
+
+          {/* Lihat Papan Skor & Bagikan ke Medsos */}
+          {onOpenLeaderboard && (
+            <button
+              onClick={onOpenLeaderboard}
+              className="w-full py-2.5 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer border border-amber-500/40 shadow-sm"
+            >
+              <Trophy className="w-4 h-4 text-amber-400" />
+              <span>Lihat Papan Skor & Share Medsos</span>
             </button>
           )}
 
