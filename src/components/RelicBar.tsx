@@ -65,7 +65,7 @@ export const RelicBar: React.FC<RelicBarProps> = ({
                   {relic.name}
                 </span>
                 <span className="text-[9px] text-stone-300 opacity-90 leading-tight font-mono">
-                  +{relic.chipsBonus}T | +{relic.multBonus}P
+                  {relic.conditionDescription}
                 </span>
               </div>
 
