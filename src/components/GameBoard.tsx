@@ -191,7 +191,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div
       id="game-table"
-      className={`GameBoard relative flex-1 w-full h-full min-h-[calc(100dvh-330px)] sm:min-h-[calc(100dvh-280px)] md:min-h-[260px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-500 ease-in-out ${
+      className={`GameBoard relative flex-1 w-full h-full min-h-0 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-4 shadow-[inset_0_4px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center select-none transition-all duration-500 ease-in-out ${
         isWildcardActive ? 'border-amber-400 ring-4 ring-amber-400/40' : 'border-stone-800'
       }`}
       style={{
