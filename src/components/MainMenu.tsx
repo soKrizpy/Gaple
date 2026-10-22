@@ -90,6 +90,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             )}
           </button>
 
+          {/* Login Google / status cloud */}
+          <button
+            onClick={cloudUserName ? onGoogleLogout : onGoogleLogin}
+            title={cloudStatus}
+            className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
+          >
+            <UserCircle className="w-4 h-4" />
+            <span className="hidden sm:inline">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
+          </button>
           {/* Suara Toggle */}
           <button
             onClick={onToggleMute}
@@ -174,6 +183,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           </button>
         </div>
       </main>
+
+      <div className="text-center text-[10px] text-stone-500 py-1">{cloudStatus}</div>
 
       {/* Footer Info Versi */}
       <footer className="relative z-10 w-full text-center py-4 text-xs text-stone-500 border-t border-stone-900 bg-slate-950/80">
