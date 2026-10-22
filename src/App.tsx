@@ -500,12 +500,12 @@ export default function App() {
     }
 
     // Catat Misi Harian
+    const newRoundScore = posRonda.roundScore + scoreCalc.totalMoveScore;
+
     recordMission('place_dominoes', 1);
     recordMission('reach_score', newRoundScore);
     if (tile.isDouble) recordMission('place_balak', 1);
     if (posRonda.wildcardActive) recordMission('use_kipas', 1);
-
-    const newRoundScore = posRonda.roundScore + scoreCalc.totalMoveScore;
     const newPlaysLeft = posRonda.playsLeft - 1 + scoreCalc.bonusPlaysGranted;
     const newStreak = posRonda.streak + 1;
     const newTargetScore = posRonda.targetScore;
@@ -707,22 +707,17 @@ export default function App() {
     rollShopRelics(activeRelics);
   };
 
-  // Reroll Toko Gratis melalui Iklan Berhadiah
+  // Callback ini hanya memberi hadiah; ShopModal membuka iklan dan memanggilnya setelah selesai.
   const handleRerollShopWithAd = () => {
     if (rewardedAdsUsed >= MAX_REWARDED_ADS_PER_GAME) {
       setPassiveNotice('📺 Kuota iklan habis (3/3) untuk permainan ini.');
       setTimeout(() => setPassiveNotice(null), 3000);
       return;
     }
-    showRewardedAd('reroll_shop', () => {
-      setRewardedAdsUsed((count) => count + 1);
-      sounds.playVictory();
-      rollShopRelics(activeRelics);
-      setPassiveNotice('📺 Toko berhasil di-refresh setelah iklan selesai!');
-      setTimeout(() => setPassiveNotice(null), 3000);
-    });
-    return;
-    // Hadiah hanya diberikan dari callback sukses iklan.
+    setRewardedAdsUsed((count) => count + 1);
+    sounds.playVictory();
+    rollShopRelics(activeRelics);
+    setPassiveNotice('📺 Toko berhasil di-refresh setelah iklan selesai!');
     setTimeout(() => setPassiveNotice(null), 3000);
   };
 
