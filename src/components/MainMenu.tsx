@@ -26,6 +26,7 @@ interface MainMenuProps {
   unclaimedMissionsCount: number;
   coins: number;
   cloudUserName: string | null;
+  cloudUserPhotoURL: string | null;
   cloudStatus: string;
   onGoogleLogin: () => void;
   onGoogleLogout: () => void;
@@ -41,6 +42,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   unclaimedMissionsCount,
   coins,
   cloudUserName,
+  cloudUserPhotoURL,
   cloudStatus,
   onGoogleLogin,
   onGoogleLogout,
@@ -101,11 +103,21 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
           {/* Login Google / status cloud */}
           <button
-            onClick={cloudUserName ? onGoogleLogout : onGoogleLogin}
-            title={cloudStatus}
+            onClick={() => {
+              if (cloudUserName) {
+                if (window.confirm('Yakin ingin logout dari akun Google?')) onGoogleLogout();
+              } else {
+                onGoogleLogin();
+              }
+            }}
+            title={cloudUserName ? 'Klik untuk logout dari akun Google' : cloudStatus}
             className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
           >
-            <UserCircle className="w-4 h-4" />
+            {cloudUserPhotoURL ? (
+              <img src={cloudUserPhotoURL} alt="Foto profil Google" className="w-5 h-5 rounded-full object-cover border border-emerald-300/60" referrerPolicy="no-referrer" />
+            ) : (
+              <UserCircle className="w-4 h-4" />
+            )}
             <span className="hidden sm:inline">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
           </button>
           {/* Suara Toggle */}
