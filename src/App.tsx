@@ -638,14 +638,30 @@ export default function App() {
 
   // Pilih Jimat Baru setelah Lolos Babak (Maksimal 5 Slot)
   const handleSelectRelic = (relic: Relic) => {
-    sounds.playAkikMerah();
+    // Resolve the selection against the canonical relic list so only a valid,
+    // complete relic object can enter game state.
+    const selectedRelic = AVAILABLE_RELICS.find((item) => item.id === relic?.id);
+    if (!selectedRelic) {
+      console.error('Pilihan jimat tidak valid:', relic);
+      return;
+    }
+
+    // Audio must never prevent the round transition on devices where playback
+    // is blocked or an audio context has not been initialized.
+    try {
+      sounds.playAkikMerah();
+    } catch (error) {
+      console.warn('Efek suara pemilihan jimat dilewati:', error);
+    }
+
     setActiveRelics((prev) => {
-      if (prev.length < 5) {
-        return [...prev, relic];
-      }
-      return [...prev.slice(1), relic];
+      // Prevent accidental duplicate relics if the selection event fires twice.
+      if (prev.some((item) => item.id === selectedRelic.id)) return prev;
+      const next = [...prev, selectedRelic];
+      return next.length > 5 ? next.slice(next.length - 5) : next;
     });
     setRelicChoices([]);
+    // Switch directly from the result modal to the shop modal.
     setIsGameOver(false);
     setIsShopOpen(true);
   };
