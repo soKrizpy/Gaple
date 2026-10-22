@@ -21,6 +21,7 @@ export interface ActiveAdSession {
   durationSeconds: number;
   onReward: () => void;
   onDismiss?: () => void;
+  rewarded?: boolean;
 }
 
 type AdListener = (session: ActiveAdSession | null) => void;
@@ -80,6 +81,7 @@ class AdMobService {
 
     this.currentSession = {
       rewardType,
+      rewarded: false,
       title: preset.title,
       description: preset.desc,
       rewardLabel: preset.reward,
@@ -87,6 +89,9 @@ class AdMobService {
       sponsorTagline: preset.tagline,
       durationSeconds: 3, // Sesuai spesifikasi: durasi 3 detik
       onReward: () => {
+        const session = this.currentSession;
+        if (!session || session.rewarded) return;
+        session.rewarded = true;
         onReward();
         this.closeAd();
       },
