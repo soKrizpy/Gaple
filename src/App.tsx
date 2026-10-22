@@ -53,7 +53,18 @@ import { auth } from './services/firebaseClient';
 import { signInWithGoogle, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile } from './services/firebaseCloudService';
 
 export default function App() {
-  const [cloudUser, setCloudUser] = useState<import('firebase/auth').User | null>(null);\n  const [cloudStatus, setCloudStatus] = useState('');\n\n  useEffect(() => onAuthStateChanged(auth, (user) => { setCloudUser(user); if (user) setCloudStatus('Login Google aktif'); else setCloudStatus('Belum login'); }), []);\n\n  const handleGoogleLogin = async () => {\n    try { setCloudStatus('Menghubungkan Google...'); const user = await signInWithGoogle(); const profile = await loadCloudPlayerProfile(user); await saveCloudPlayerProfile(user, profile); setCloudStatus('Tersimpan di cloud'); }\n    catch (error) { console.error('Google sign-in gagal:', error); setCloudStatus('Login gagal. Periksa domain resmi dan konfigurasi Firebase.'); }\n  };\n  const handleGoogleLogout = async () => { try { await signOutPlayer(); setCloudStatus('Logout berhasil'); } catch (error) { console.error(error); setCloudStatus('Logout gagal'); } };\n\n  // Screen State Machine: 'main_menu', 'game', atau 'leaderboard'
+  const [cloudUser, setCloudUser] = useState<import('firebase/auth').User | null>(null);
+  const [cloudStatus, setCloudStatus] = useState('');
+
+  useEffect(() => onAuthStateChanged(auth, (user) => { setCloudUser(user); if (user) setCloudStatus('Login Google aktif'); else setCloudStatus('Belum login'); }), []);
+
+  const handleGoogleLogin = async () => {
+    try { setCloudStatus('Menghubungkan Google...'); const user = await signInWithGoogle(); const profile = await loadCloudPlayerProfile(user); await saveCloudPlayerProfile(user, profile); setCloudStatus('Tersimpan di cloud'); }
+    catch (error) { console.error('Google sign-in gagal:', error); setCloudStatus('Login gagal. Periksa domain resmi dan konfigurasi Firebase.'); }
+  };
+  const handleGoogleLogout = async () => { try { await signOutPlayer(); setCloudStatus('Logout berhasil'); } catch (error) { console.error(error); setCloudStatus('Logout gagal'); } };
+
+  // Screen State Machine: 'main_menu', 'game', atau 'leaderboard'
   const [screen, setScreen] = useState<'main_menu' | 'game' | 'leaderboard'>('main_menu');
   const previousScreenRef = useRef<'main_menu' | 'game'>('main_menu');
   const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
