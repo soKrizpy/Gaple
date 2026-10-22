@@ -54,6 +54,8 @@ export default function App() {
   const [screen, setScreen] = useState<'main_menu' | 'game' | 'leaderboard'>('main_menu');
   const previousScreenRef = useRef<'main_menu' | 'game'>('main_menu');
   const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
+  const [rewardedAdsUsed, setRewardedAdsUsed] = useState<number>(0);
+  const MAX_REWARDED_ADS_PER_GAME = 3;
 
   // Responsiveness: Portrait / Landscape & Layar Tinggi Terbatas (Compact Height)
   const [isPortrait, setIsPortrait] = useState<boolean>(() => {
@@ -205,6 +207,7 @@ export default function App() {
 
   // Memulai Permainan dari Menu Utama
   const handleStartGame = () => {
+    setRewardedAdsUsed(0);
     sounds.playTileClack();
     setScore(0);
     initGame(1);
@@ -689,6 +692,12 @@ export default function App() {
 
   // Reroll Toko Gratis melalui Iklan Berhadiah
   const handleRerollShopWithAd = () => {
+    if (rewardedAdsUsed >= MAX_REWARDED_ADS_PER_GAME) {
+      setPassiveNotice('📺 Kuota iklan habis (3/3) untuk permainan ini.');
+      setTimeout(() => setPassiveNotice(null), 3000);
+      return;
+    }
+    setRewardedAdsUsed((count) => count + 1);
     sounds.playVictory();
     rollShopRelics(activeRelics);
     setPassiveNotice('📺 Toko Berhasil Di-refresh Gratis Berkat Nonton Iklan!');
@@ -697,6 +706,12 @@ export default function App() {
 
   // Revive Saat Kalah (Nonton Iklan untuk Tambah 2 Giliran)
   const handleReviveWithAd = () => {
+    if (rewardedAdsUsed >= MAX_REWARDED_ADS_PER_GAME) {
+      setPassiveNotice('📺 Kuota iklan habis (3/3) untuk permainan ini.');
+      setTimeout(() => setPassiveNotice(null), 3000);
+      return;
+    }
+    setRewardedAdsUsed((count) => count + 1);
     showRewardedAd('revive_round', () => {
       sounds.playVictory();
       setPosRonda((prev) => ({
