@@ -94,7 +94,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   const handPipTotal = hand.reduce((acc, t) => acc + t.head + t.tail, 0);
 
   return (
-    <footer className="fixed inset-x-0 bottom-0 sm:static w-full bg-slate-900/95 backdrop-blur-md border-t border-stone-800 px-1.5 sm:px-3 pt-1 sm:pt-1.5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:pb-3 flex flex-col gap-1 sm:gap-1.5 shrink-0 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
+    <footer className="fixed inset-x-0 bottom-0 sm:static w-full bg-slate-900/95 border-t border-stone-800 px-1.5 sm:px-3 pt-1 sm:pt-1.5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:pb-3 flex flex-col gap-1 sm:gap-1.5 shrink-0 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
       {/* Baris Kontrol Meja Bawah (Ringkas & Efisien untuk Layar HP agar Kartu Tidak Tertutup) */}
       <div className="flex items-center justify-between gap-1.5 px-2 py-1 rounded-xl bg-stone-950/80 border border-stone-800/80 text-xs">
         {/* Sisi Kiri: Kuota Pasang, Buang, & Streak Neon */}
@@ -244,7 +244,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
 
       {/* Chain Aksi Lanjutan untuk Kartu yang Dipilih (Pasang, Jimat, Buang) */}
       {selectedTile && (
-        <div className={`fixed top-1/2 -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[60] w-[min(42vw,168px)] flex flex-col items-stretch gap-2 bg-stone-950/95 backdrop-blur-md px-2 py-2 rounded-2xl border border-amber-500/60 shadow-2xl animate-in fade-in duration-200`}>
+        <div className={`fixed top-[50dvh] -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[60] w-[min(42vw,168px)] flex flex-col items-stretch gap-2 bg-stone-950/95 backdrop-blur-md px-2 py-2 rounded-2xl border border-amber-500/60 shadow-2xl animate-in fade-in duration-200`}>
           <div className="flex items-center justify-between gap-1 border-b border-stone-800 pb-1.5">
             <span className="text-[10px] uppercase tracking-wide text-stone-400 font-bold">Batu Dipilih</span>
             <button
