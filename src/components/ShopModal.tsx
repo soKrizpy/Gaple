@@ -291,7 +291,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
             </button>
 
             {/* Refresh Toko Gratis (Tonton Video Iklan) */}
-            <button
+            {canWatchAd && <button
               onClick={() => {
                 showRewardedAd('reroll_shop', () => {
                   onRerollShopWithAd();
@@ -301,7 +301,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
             >
               <Video className="w-3.5 h-3.5 text-blue-200 animate-pulse" />
               <span>Refresh Toko Gratis (Tonton Video)</span>
-            </button>
+            </button>}
           </div>
 
           {/* Tombol Lanjut ke Babak Pos Ronda Berikutnya */}
