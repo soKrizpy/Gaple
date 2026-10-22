@@ -976,6 +976,7 @@ export default function App() {
         gapleExplosionData={gapleExplosionData}
         coinsEarned={roundCoinsEarned}
         onReviveWithAd={handleReviveWithAd}
+        canWatchAd={rewardedAdsUsed < MAX_REWARDED_ADS_PER_GAME}
         onOpenShop={() => {
           setIsGameOver(false);
           setIsShopOpen(true);
@@ -1000,6 +1001,7 @@ export default function App() {
         onBuyConsumable={handleBuyConsumable}
         onRerollShopWithCoins={handleRerollShopWithCoins}
         onRerollShopWithAd={handleRerollShopWithAd}
+        canWatchAd={rewardedAdsUsed < MAX_REWARDED_ADS_PER_GAME}
         onCloseShop={handleProceedNextRound}
         nextRoundNumber={posRonda.currentRound + 1}
       />
