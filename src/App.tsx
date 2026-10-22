@@ -229,6 +229,9 @@ export default function App() {
     setLeftEnd(null);
     setRightEnd(null);
     setSelectedTile(null);
+    // Titik dan pengali adalah nilai langkah terakhir, jadi mulai babak baru dari nol.
+    setCurrentChips(0);
+    setCurrentMult(1);
     setIsDeadlock(false);
     setIsGameOver(false);
     setIsShopOpen(false);
@@ -598,9 +601,11 @@ export default function App() {
     setHand(nextHand);
     setBoneyard(nextBoneyard);
     setSelectedTile(null);
+    // Membuang batu memutus rantai: bonus streak harus dibangun lagi dengan pasang beruntun.
     setPosRonda((prev) => ({
       ...prev,
       discardsLeft: prev.discardsLeft - 1,
+      streak: 0,
     }));
   };
 
