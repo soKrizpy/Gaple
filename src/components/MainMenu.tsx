@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import balakutakLogo from '../assets/images/balakutak_master_logo_1792665905566.jpg';
 import {
   Play,
   BookOpen,
@@ -47,7 +48,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       <header className="relative z-10 w-full max-w-4xl mx-auto px-4 py-3 flex items-center justify-between border-b border-stone-800/80 bg-slate-950/70 backdrop-blur-md">
         <div className="flex items-center gap-2.5">
           <img
-            src="/src/assets/images/balakutak_master_logo_1792665905566.jpg"
+            src={balakutakLogo}
             alt="Balakutak Master Logo"
             className="w-9 h-9 rounded-xl object-cover border border-amber-400/70 shadow-md ring-2 ring-amber-500/30"
             referrerPolicy="no-referrer"
@@ -108,7 +109,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <div className="relative group cursor-pointer transition-transform hover:scale-105 active:scale-95 duration-300">
             <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-emerald-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity animate-pulse pointer-events-none" />
             <img
-              src="/src/assets/images/balakutak_master_logo_1792665905566.jpg"
+              src={balakutakLogo}
               alt="Logo Balakutak Master"
               className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-amber-300/80 shadow-[0_0_35px_rgba(245,158,11,0.65)] ring-4 ring-amber-500/40"
               referrerPolicy="no-referrer"
