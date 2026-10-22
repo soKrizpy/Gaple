@@ -9,6 +9,8 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   type User,
 } from 'firebase/auth';
@@ -41,8 +43,22 @@ export function subscribeToAuth(callback: (user: User | null) => void): () => vo
 }
 
 export async function signInWithGoogle(): Promise<User> {
+  // Mobile browsers often close or isolate OAuth popups. Use a full-page
+  // redirect on phones, then finish the sign-in when the app returns.
+  const isMobile = typeof navigator !== 'undefined'
+    && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (isMobile) {
+    await signInWithRedirect(auth, googleProvider);
+    // Navigation should happen before this function returns.
+    return new Promise<User>(() => {});
+  }
   const result = await signInWithPopup(auth, googleProvider);
   return result.user;
+}
+
+export async function completeGoogleRedirect(): Promise<User | null> {
+  const result = await getRedirectResult(auth);
+  return result?.user ?? null;
 }
 
 export async function signOutPlayer(): Promise<void> {
