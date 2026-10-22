@@ -24,6 +24,7 @@ interface ResultModalProps {
   } | null;
   coinsEarned?: number;
   onReviveWithAd?: () => void;
+  canWatchAd?: boolean;
   onOpenShop?: () => void;
   onOpenLeaderboard?: () => void;
   onReturnToMainMenu?: () => void;
@@ -41,6 +42,7 @@ export const GapleModal: React.FC<ResultModalProps> = ({
   gapleExplosionData,
   coinsEarned = 0,
   onReviveWithAd,
+  canWatchAd = true,
   onOpenShop,
   onOpenLeaderboard,
   onReturnToMainMenu,
@@ -219,7 +221,7 @@ export const GapleModal: React.FC<ResultModalProps> = ({
           )}
 
           {/* Kalah: Nonton Iklan Revive (+2 Giliran) */}
-          {!isTargetAchieved && onReviveWithAd && (
+          {!isTargetAchieved && onReviveWithAd && canWatchAd && (
             <button
               onClick={onReviveWithAd}
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xs md:text-sm uppercase tracking-wider shadow-lg shadow-red-500/30 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-rose-300 animate-pulse"
