@@ -86,7 +86,12 @@ export default function App() {
   // Misi Harian & Dompet Koin
   const [missions, setMissions] = useState<DailyMission[]>(() => loadDailyMissions());
   const [isMissionsOpen, setIsMissionsOpen] = useState<boolean>(false);
-  const [coins, setCoins] = useState<number>(4);
+  const [coins, setCoins] = useState<number>(() => {
+    if (typeof window === 'undefined') return 4;
+    const saved = Number(localStorage.getItem('balakutak_wallet_coins'));
+    return Number.isFinite(saved) && saved >= 0 ? saved : 4;
+  });
+  const [bonusScoreNextRound, setBonusScoreNextRound] = useState<number>(0);
   const [roundCoinsEarned, setRoundCoinsEarned] = useState<number>(0);
 
   // Toko Ronda Antar-Babak
@@ -143,6 +148,11 @@ export default function App() {
       return updatedMissions;
     });
   }, []);
+
+  // Persist wallet locally until cloud account sync is configured.
+  useEffect(() => {
+    try { localStorage.setItem('balakutak_wallet_coins', String(coins)); } catch { /* storage may be unavailable */ }
+  }, [coins]);
 
   // Resize listener
   useEffect(() => {
@@ -254,7 +264,8 @@ export default function App() {
       isWon: boolean,
       finalScore: number,
       finalPosRonda: PosRondaState,
-      deadlockData: { pipSum: number; multiplier: number; explosionScore: number } | null = null
+      deadlockData: { pipSum: number; multiplier: number; explosionScore: number } | null = null,
+      sessionFinalScore: number = finalScore
     ) => {
       setIsGameOver(true);
       setRoundBonusEarned(finalScore);
@@ -288,12 +299,15 @@ export default function App() {
       }
 
       // Catat ke Papan Skor (Leaderboard)
-      recordLeaderboardScore({
-        score: finalScore,
-        roundReached: finalPosRonda.currentRound,
-        streak: finalPosRonda.streak,
-        favRelicName: activeRelics[0]?.name,
-      });
+      // One leaderboard entry represents a completed run, not every successful round.
+      if (!isWon) {
+        recordLeaderboardScore({
+          score: sessionFinalScore,
+          roundReached: finalPosRonda.currentRound,
+          streak: finalPosRonda.streak,
+          favRelicName: activeRelics[0]?.name,
+        });
+      }
     },
     [activeRelics, recordMission, rollShopRelics]
   );
@@ -469,7 +483,8 @@ export default function App() {
       tile,
       posRonda.streak,
       activeRelics,
-      nextHand.length
+      nextHand.length,
+      posRonda.wildcardActive
     );
 
     // Animasi Relic jika ada jimat yang terpicu
@@ -486,6 +501,7 @@ export default function App() {
 
     // Catat Misi Harian
     recordMission('place_dominoes', 1);
+    recordMission('reach_score', newRoundScore);
     if (tile.isDouble) recordMission('place_balak', 1);
     if (posRonda.wildcardActive) recordMission('use_kipas', 1);
 
@@ -519,10 +535,10 @@ export default function App() {
 
           // Cek Kondisi Kemenangan Babak
           if (newRoundScore >= newTargetScore) {
-            finalizeRound(true, newRoundScore, nextPosRondaState);
+            finalizeRound(true, newRoundScore, nextPosRondaState, null, score + (newRoundScore - posRonda.roundScore));
           } else if (newPlaysLeft <= 0) {
             // Kuota pasang habis dan belum mencapai target
-            finalizeRound(false, newRoundScore, nextPosRondaState);
+            finalizeRound(false, newRoundScore, nextPosRondaState, null, score + (newRoundScore - posRonda.roundScore));
           }
         },
       }
@@ -590,7 +606,7 @@ export default function App() {
       setScore((prev) => prev + explosionData.explosionScore);
 
       const isWon = finalRoundScore >= posRonda.targetScore;
-      finalizeRound(isWon, finalRoundScore, updatedPosRonda, explosionData);
+      finalizeRound(isWon, finalRoundScore, updatedPosRonda, explosionData, score + explosionData.explosionScore);
     });
   };
 
@@ -653,7 +669,7 @@ export default function App() {
           const targetPip = maxPip === 0 ? 6 : maxPip;
           return {
             ...tile,
-            id: `${targetPip}-${targetPip}`,
+            // Keep the physical tile ID stable to avoid duplicate keys / selection collisions.
             head: targetPip,
             tail: targetPip,
             isDouble: true,
@@ -676,8 +692,9 @@ export default function App() {
     if (item.id === 'item_esteh') {
       setPosRonda((prev) => ({ ...prev, discardsLeft: prev.discardsLeft + 2 }));
       setPassiveNotice('🥤 Es Teh Manis Diminum: +2 Kuota Buang Batu Ditambahkan!');
-    } else if (item.id === 'item_rokok') {
-      setPassiveNotice('🚬 Sebungkus Kretek Dibeli: Modal +150 Skor Aktif di Pos Depan!');
+    } else if (item.id === 'item_baterai') {
+      setBonusScoreNextRound((prev) => prev + 150);
+      setPassiveNotice('🔋 Baterai Cadangan disimpan: +150 skor awal pada babak berikutnya!');
     }
     setTimeout(() => setPassiveNotice(null), 3000);
   };
@@ -697,10 +714,15 @@ export default function App() {
       setTimeout(() => setPassiveNotice(null), 3000);
       return;
     }
-    setRewardedAdsUsed((count) => count + 1);
-    sounds.playVictory();
-    rollShopRelics(activeRelics);
-    setPassiveNotice('📺 Toko Berhasil Di-refresh Gratis Berkat Nonton Iklan!');
+    showRewardedAd('reroll_shop', () => {
+      setRewardedAdsUsed((count) => count + 1);
+      sounds.playVictory();
+      rollShopRelics(activeRelics);
+      setPassiveNotice('📺 Toko berhasil di-refresh setelah iklan selesai!');
+      setTimeout(() => setPassiveNotice(null), 3000);
+    });
+    return;
+    // Hadiah hanya diberikan dari callback sukses iklan.
     setTimeout(() => setPassiveNotice(null), 3000);
   };
 
@@ -711,8 +733,8 @@ export default function App() {
       setTimeout(() => setPassiveNotice(null), 3000);
       return;
     }
-    setRewardedAdsUsed((count) => count + 1);
     showRewardedAd('revive_round', () => {
+      setRewardedAdsUsed((count) => count + 1);
       sounds.playVictory();
       setPosRonda((prev) => ({
         ...prev,
@@ -765,7 +787,10 @@ export default function App() {
     setIsShopOpen(false);
     setIsGameOver(false);
     sounds.playVictory();
-    initGame(posRonda.currentRound + 1);
+    const nextRound = posRonda.currentRound + 1;
+    const startingBonus = bonusScoreNextRound;
+    setBonusScoreNextRound(0);
+    initGame(nextRound, startingBonus);
   };
 
   // =========================================================================
