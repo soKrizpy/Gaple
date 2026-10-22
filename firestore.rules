@@ -20,7 +20,7 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.keys().hasOnly([
           'userId', 'name', 'title', 'score', 'roundReached',
-          'streak', 'timestamp', 'avatar', 'favRelic'
+          'streak', 'timestamp', 'avatar', 'favRelic', 'createdAt'
         ])
         && request.resource.data.name is string
         && request.resource.data.name.size() <= 18
