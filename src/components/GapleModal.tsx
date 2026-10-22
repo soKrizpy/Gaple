@@ -186,8 +186,8 @@ export const GapleModal: React.FC<ResultModalProps> = ({
                   <div className="flex-1">
                     <div className="text-xs font-extrabold text-amber-300">{r.name}</div>
                     <div className="text-[11px] text-stone-300 leading-tight mt-0.5">{r.desc}</div>
-                    <div className="text-[10px] text-emerald-400 font-mono mt-1">
-                      +{r.chipsBonus} Titik | +{r.multBonus} Pengali
+                    <div className="text-[10px] text-emerald-400 font-mono mt-1 leading-snug">
+                      {r.conditionDescription}
                     </div>
                   </div>
                 </button>
