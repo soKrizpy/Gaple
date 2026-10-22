@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Domino } from '../types';
 import { DominoTile } from './DominoTile';
 import {
@@ -243,8 +244,8 @@ export const ControlDock: React.FC<ControlDockProps> = ({
       </div>
 
       {/* Chain Aksi Lanjutan untuk Kartu yang Dipilih (Pasang, Jimat, Buang) */}
-      {selectedTile && (
-        <div className={`fixed top-[50dvh] -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[60] w-[min(42vw,168px)] flex flex-col items-stretch gap-2 bg-stone-950/95 backdrop-blur-md px-2 py-2 rounded-2xl border border-amber-500/60 shadow-2xl animate-in fade-in duration-200`}>
+      {selectedTile && typeof document !== 'undefined' && createPortal(
+        <div className={`fixed top-[45dvh] -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[9999] w-[min(42vw,168px)] max-h-[55dvh] overflow-y-auto flex flex-col items-stretch gap-2 bg-stone-950/95 px-2 py-2 rounded-2xl border border-amber-500/70 shadow-2xl animate-in fade-in duration-200`}>
           <div className="flex items-center justify-between gap-1 border-b border-stone-800 pb-1.5">
             <span className="text-[10px] uppercase tracking-wide text-stone-400 font-bold">Batu Dipilih</span>
             <button
@@ -357,7 +358,8 @@ export const ControlDock: React.FC<ControlDockProps> = ({
               <span>Buang ({discardsLeft}/3)</span>
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Barisan 7 Batu Domino di Tangan Pemain (Responsif & Selalu Tampak Penuh di Layar HP) */}
