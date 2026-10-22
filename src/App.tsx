@@ -858,7 +858,7 @@ export default function App() {
       )}
 
       {/* Bagian Tengah (Papan Meja): Jalur Rantai Domino Rapi (Responsif & Proporsional di Layar HP) */}
-      <main className="relative flex flex-col p-1 sm:p-1.5 md:p-2.5 overflow-hidden flex-1 min-h-[calc(100dvh-330px)] sm:min-h-0 shrink-0 sm:shrink transition-all duration-500 ease-in-out">
+      <main className="relative flex flex-col p-1 sm:p-1.5 md:p-2.5 overflow-hidden flex-1 min-h-0 shrink transition-all duration-500 ease-in-out">
         <GameBoard
           tiles={placedTiles}
           leftEnd={leftEnd}
