@@ -245,7 +245,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
 
       {/* Chain Aksi Lanjutan untuk Kartu yang Dipilih (Pasang, Jimat, Buang) */}
       {selectedTile && typeof document !== 'undefined' && createPortal(
-        <div className={`fixed top-[45dvh] -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[9999] w-[min(42vw,168px)] max-h-[55dvh] overflow-y-auto flex flex-col items-stretch gap-2 bg-stone-950/95 px-2 py-2 rounded-2xl border border-amber-500/70 shadow-2xl animate-in fade-in duration-200`}>
+        <div className={`fixed bottom-[calc(env(safe-area-inset-bottom)+150px)] ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[9999] w-[min(42vw,168px)] max-h-[45dvh] overflow-y-auto flex flex-col items-stretch gap-2 bg-stone-950/95 px-2 py-2 rounded-2xl border border-amber-500/70 shadow-2xl animate-in fade-in duration-200`}>
           <div className="flex items-center justify-between gap-1 border-b border-stone-800 pb-1.5">
             <span className="text-[10px] uppercase tracking-wide text-stone-400 font-bold">Batu Dipilih</span>
             <button
