@@ -73,7 +73,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           </span>
         </div>
 
-        {/* Dompet Koin, Misi & Audio */}
+        {/* Dompet & profil tetap sejajar; kontrol lain ditumpuk di bawah ikon suara */}
         <div className="flex items-center gap-2">
           {/* Dompet Koin */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
@@ -81,31 +81,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             <span className="font-mono font-black text-xs md:text-sm">{coins.toLocaleString('id-ID')}</span>
           </div>
 
-          {/* Papan Skor Button */}
-          <button
-            onClick={onOpenLeaderboard}
-            title="Papan Skor & Klasemen Juara"
-            className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
-          >
-            <Trophy className="w-4 h-4 text-amber-400" />
-            <span className="hidden sm:inline">Papan Skor</span>
-          </button>
-
-          {/* Misi Harian Button with Notification Badge */}
-          <button
-            onClick={onOpenMissions}
-            className="relative px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-200 transition-all flex items-center gap-1.5 cursor-pointer hover:border-amber-500/50 active:scale-95 text-xs font-bold"
-          >
-            <ListTodo className="w-4 h-4 text-amber-400" />
-            <span className="hidden sm:inline">Misi</span>
-            {unclaimedMissionsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-mono font-black text-[9px] flex items-center justify-center animate-bounce shadow">
-                {unclaimedMissionsCount}
-              </span>
-            )}
-          </button>
-
-          {/* Login Google / status cloud */}
+          {/* Login Google / status cloud — beri ruang agar foto profil terlihat jelas */}
           <button
             onClick={() => {
               if (cloudUserName) {
@@ -115,23 +91,50 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               }
             }}
             title={cloudUserName ? 'Klik untuk logout dari akun Google' : cloudStatus}
-            className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
+            className="max-w-[140px] px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
           >
             {cloudUserPhotoURL ? (
-              <img src={cloudUserPhotoURL} alt="Foto profil Google" className="w-5 h-5 rounded-full object-cover border border-emerald-300/60" referrerPolicy="no-referrer" />
+              <img src={cloudUserPhotoURL} alt="Foto profil Google" className="w-7 h-7 shrink-0 rounded-full object-cover border border-emerald-300/60" referrerPolicy="no-referrer" />
             ) : (
-              <UserCircle className="w-4 h-4" />
+              <UserCircle className="w-5 h-5 shrink-0" />
             )}
-            <span className="hidden sm:inline">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
+            <span className="hidden sm:inline truncate">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
           </button>
-          {/* Suara Toggle */}
-          <button
-            onClick={onToggleMute}
-            title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
-            className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-300 hover:text-white transition-all cursor-pointer active:scale-95"
-          >
-            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
-          </button>
+
+          {/* Audio di atas; Papan Skor dan Misi Harian tersusun vertikal di bawahnya */}
+          <div className="flex flex-col items-center gap-1">
+            <button
+              onClick={onToggleMute}
+              title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
+              aria-label={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
+              className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-300 hover:text-white transition-all cursor-pointer active:scale-95"
+            >
+              {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+            </button>
+
+            <button
+              onClick={onOpenLeaderboard}
+              title="Papan Skor & Klasemen Juara"
+              aria-label="Papan Skor & Klasemen Juara"
+              className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 transition-all flex items-center justify-center cursor-pointer active:scale-95"
+            >
+              <Trophy className="w-4 h-4 text-amber-400" />
+            </button>
+
+            <button
+              onClick={onOpenMissions}
+              title="Misi Harian"
+              aria-label="Misi Harian"
+              className="relative p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-200 transition-all flex items-center justify-center cursor-pointer hover:border-amber-500/50 active:scale-95"
+            >
+              <ListTodo className="w-4 h-4 text-amber-400" />
+              {unclaimedMissionsCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-mono font-black text-[9px] flex items-center justify-center animate-bounce shadow">
+                  {unclaimedMissionsCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
