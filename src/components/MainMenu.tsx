@@ -15,6 +15,7 @@ import {
   Sparkles,
   Flame,
   Trophy,
+  UserCircle,
 } from 'lucide-react';
 
 interface MainMenuProps {
@@ -24,6 +25,10 @@ interface MainMenuProps {
   onOpenLeaderboard: () => void;
   unclaimedMissionsCount: number;
   coins: number;
+  cloudUserName: string | null;
+  cloudStatus: string;
+  onGoogleLogin: () => void;
+  onGoogleLogout: () => void;
   isMuted: boolean;
   onToggleMute: () => void;
 }
@@ -35,6 +40,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onOpenLeaderboard,
   unclaimedMissionsCount,
   coins,
+  cloudUserName,
+  cloudStatus,
+  onGoogleLogin,
+  onGoogleLogout,
   isMuted,
   onToggleMute,
 }) => {
