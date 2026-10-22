@@ -816,6 +816,7 @@ export default function App() {
           unclaimedMissionsCount={unclaimedMissionsCount}
           coins={coins}
           cloudUserName={cloudUser?.displayName || null}
+          cloudUserPhotoURL={cloudUser?.photoURL || null}
           cloudStatus={cloudStatus}
           onGoogleLogin={handleGoogleLogin}
           onGoogleLogout={handleGoogleLogout}
