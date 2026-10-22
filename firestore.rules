@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Private player profile and progress. Each signed-in player can access
+    // only their own document. Validate fields again in trusted backend code
+    // before using client-submitted values for rewards or competitive scores.
+    match /players/{userId} {
+      allow read, create, update: if request.auth != null
+        && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // Public leaderboard entries, with ownership tied to the signed-in UID.
+    // Client-only score submissions are not cheat-proof; a trusted backend
+    // should validate competitive results before production ranking.
+    match /leaderboard/{entryId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'userId', 'name', 'title', 'score', 'roundReached',
+          'streak', 'timestamp', 'avatar', 'favRelic'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 18
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.roundReached is int
+        && request.resource.data.roundReached >= 1
+        && request.resource.data.streak is int
+        && request.resource.data.streak >= 0;
+      allow update, delete: if false;
+    }
+  }
+}
