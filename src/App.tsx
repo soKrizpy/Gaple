@@ -809,7 +809,7 @@ export default function App() {
   // SCREEN 3: GAMEPLAY UTAMA (Minimalis & Bebas Clutter)
   // =========================================================================
   return (
-    <div className="flex flex-col h-screen h-[100dvh] w-screen overflow-hidden bg-slate-950 font-sans text-stone-100 select-none">
+    <div className="flex flex-col h-screen h-[100svh] w-screen overflow-hidden bg-slate-950 font-sans text-stone-100 select-none">
       {/* Bagian Atas (HUD): Hanya Target Skor, Skor Saat Ini, Pos Ronda, Sisa Pasang, Sisa Buang, dan Koin */}
       <ScoreHeader
         score={score}
@@ -858,7 +858,7 @@ export default function App() {
       )}
 
       {/* Bagian Tengah (Papan Meja): Jalur Rantai Domino Rapi (Responsif & Proporsional di Layar HP) */}
-      <main className="relative flex flex-col p-1 sm:p-1.5 md:p-2.5 overflow-hidden flex-1 min-h-0 shrink transition-all duration-500 ease-in-out">
+      <main className="relative flex flex-col p-1 sm:p-1.5 md:p-2.5 pb-[156px] sm:pb-0 overflow-hidden flex-1 min-h-0 shrink transition-all duration-500 ease-in-out">
         <GameBoard
           tiles={placedTiles}
           leftEnd={leftEnd}
