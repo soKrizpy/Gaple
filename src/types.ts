@@ -110,5 +110,6 @@ export interface PlayerProfile {
   highestRound: number;
   highestStreak: number;
   gamesPlayed: number;
+  avatar?: string;
 }
 
