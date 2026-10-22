@@ -798,7 +798,18 @@ export default function App() {
   if (screen === 'leaderboard') {
     return (
       <LeaderboardPage
-        onBack={() => setScreen(previousScreenRef.current || 'main_menu')}
+        onBack={() => {
+          // Jika leaderboard dibuka dari pop-up kemenangan, lanjutkan otomatis
+          // ke babak berikutnya saat pemain kembali ke permainan.
+          const returningToGame = previousScreenRef.current === 'game';
+          const roundWon = posRonda.roundScore >= posRonda.targetScore;
+          if (returningToGame && isGameOver && roundWon) {
+            setScreen('game');
+            handleProceedNextRound();
+            return;
+          }
+          setScreen(previousScreenRef.current || 'main_menu');
+        }}
         currentScore={score}
         currentRound={posRonda.currentRound}
       />
