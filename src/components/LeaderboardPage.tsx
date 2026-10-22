@@ -154,8 +154,13 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
         </button>
 
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
-            <Trophy className="w-4 h-4 text-amber-400" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 p-0.5 shadow-[0_0_14px_rgba(245,158,11,0.25)] shrink-0">
+            <img
+              src={balakutakLogo}
+              alt="Logo Balakutak Master"
+              className="w-full h-full rounded-[10px] object-cover"
+              referrerPolicy="no-referrer"
+            />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400">
