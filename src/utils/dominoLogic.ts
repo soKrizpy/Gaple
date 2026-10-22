@@ -240,8 +240,11 @@ export function calculateMoveScorePosRonda(
   // 1. Titik Dasar = jumlah titik pada batu tersebut
   let chips = tile.head + tile.tail;
   
-  // 2. Pengali Dasar bertambah +1 setiap kali berhasil membuat rantai sambungan (streak)
-  let mult = 1 + currentStreak;
+  // 2. Streak memberi bonus nyata: +1 Mult per sambungan beruntun,
+  //    lalu bonus ekstra +2 Mult pada streak ke-3, 6, 9, dan seterusnya.
+  //    App memutus streak saat pemain membuang batu.
+  const streakMilestoneBonus = Math.floor(currentStreak / 3) * 2;
+  let mult = 1 + currentStreak + streakMilestoneBonus;
 
   // 3. Bonus Balak: Jika memasang batu Balak (kembar), berikan pengganda instan: Mult × 2!
   const isBalak = tile.isDouble;
