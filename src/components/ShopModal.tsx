@@ -19,6 +19,7 @@ interface ShopModalProps {
   onRerollShopWithAd: () => void;
   onCloseShop: () => void;
   nextRoundNumber: number;
+  canWatchAd?: boolean;
 }
 
 export const SHOP_CONSUMABLES: ConsumableItem[] = [
@@ -61,6 +62,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
   onRerollShopWithAd,
   onCloseShop,
   nextRoundNumber,
+  canWatchAd = true,
 }) => {
   const [selectedTileForGorengan, setSelectedTileForGorengan] = useState<string | null>(null);
   const [isGorenganMode, setIsGorenganMode] = useState<boolean>(false);
