@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import balakutakLogo from '../assets/images/balakutak_master_logo_1792665905566.jpg';
 import {
   Trophy,
   ArrowLeft,
@@ -50,12 +51,31 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile>(() => getStoredPlayerProfile());
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(playerProfile.nickname);
+  const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
+  const avatarOptions = [
+    { emoji: '🀄', label: 'Balakutak Master' },
+    { emoji: '😎', label: 'Jagoan Keren' },
+    { emoji: '🤠', label: 'Si Raja Gaple' },
+    { emoji: '🐱', label: 'Kucing Santai' },
+    { emoji: '🐶', label: 'Si Cerdik' },
+    { emoji: '🐧', label: 'Penguin Strategi' },
+    { emoji: '🐼', label: 'Panda Tenang' },
+    { emoji: '🐔', label: 'Ayam Jago' },
+  ];
   const [selectedEntryToShare, setSelectedEntryToShare] = useState<LeaderboardEntry | null>(null);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     setEntries(getFilteredLeaderboard(timeframe));
   }, [timeframe]);
+
+  const handleSaveAvatar = (avatar: string) => {
+    sounds.playTileClack();
+    const updated = savePlayerProfile({ avatar });
+    setPlayerProfile(updated);
+    setIsAvatarPickerOpen(false);
+    setEntries(getFilteredLeaderboard(timeframe).map((entry) => entry.isCurrentPlayer ? { ...entry, avatar } : entry));
+  };
 
   const handleSaveNickname = () => {
     sounds.playTileClack();
@@ -157,7 +177,7 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
               roundReached: displayRound,
               streak: playerProfile.highestStreak,
               timestamp: Date.now(),
-              avatar: '🀄',
+              avatar: playerProfile.avatar || '🀄',
               isCurrentPlayer: true,
             });
           }}
@@ -175,11 +195,9 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
         <div className="w-full rounded-2xl bg-gradient-to-br from-stone-900 via-slate-900 to-amber-950/40 border border-amber-500/30 p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Info Pemain */}
           <div className="flex items-center gap-3.5 w-full sm:w-auto">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-lg flex items-center justify-center shrink-0">
-              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-2xl">
-                🀄
-              </div>
-            </div>
+            <button type="button" onClick={() => setIsAvatarPickerOpen(true)} title="Pilih avatar pemain" className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-lg flex items-center justify-center shrink-0 cursor-pointer active:scale-95">
+              <span className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-3xl">{playerProfile.avatar || '🀄'}</span>
+            </button>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -476,6 +494,29 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
         </div>
       </main>
 
+      {isAvatarPickerOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[60]">
+          <div className="w-full max-w-sm rounded-3xl border border-amber-500/50 bg-slate-900 p-5 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-black text-amber-200">Pilih Avatar</h3>
+                <p className="text-xs text-stone-400">Gaya Balakutak Master · 8 pilihan</p>
+              </div>
+              <button onClick={() => setIsAvatarPickerOpen(false)} className="rounded-lg bg-stone-800 px-3 py-2 text-stone-300">✕</button>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {avatarOptions.map((option) => (
+                <button key={option.emoji} onClick={() => handleSaveAvatar(option.emoji)} title={option.label} aria-label={option.label} className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 transition-all ${(playerProfile.avatar || '🀄') === option.emoji ? 'border-amber-300 bg-amber-500/20 shadow-[0_0_18px_rgba(245,158,11,0.35)]' : 'border-stone-700 bg-slate-950 hover:border-amber-500/60'}`}>
+                  <span className="text-3xl">{option.emoji}</span>
+                  <span className="text-[9px] text-stone-300 text-center leading-tight">{option.label}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-4 text-[11px] text-stone-500">Pilihan tersimpan otomatis di perangkat ini.</p>
+          </div>
+        </div>
+      )}
+
       {/* Modal Dialog Share ke Media Sosial */}
       {selectedEntryToShare && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 select-none animate-in fade-in duration-200">
@@ -505,7 +546,7 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
               {/* Mascot Logo Mini */}
               <div className="w-12 h-12 mx-auto rounded-full p-0.5 bg-gradient-to-tr from-amber-500 to-yellow-300 shadow-md mb-1.5">
                 <img
-                  src="/src/assets/images/balakutak_master_logo_1792665905566.jpg"
+                  src={balakutakLogo}
                   alt="Balakutak Master Logo"
                   className="w-full h-full rounded-full object-cover"
                   referrerPolicy="no-referrer"
