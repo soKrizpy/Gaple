@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import balakutakLogo from '../assets/images/balakutak_master_logo_1792665905566.jpg';
 import {
   Play,
@@ -16,6 +16,8 @@ import {
   Flame,
   Trophy,
   UserCircle,
+  LogOut,
+  X,
 } from 'lucide-react';
 
 interface MainMenuProps {
@@ -49,6 +51,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   isMuted,
   onToggleMute,
 }) => {
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen w-full flex flex-col justify-between bg-slate-950 text-stone-100 overflow-hidden select-none">
       {/* Background Ambience: Warkop Night Vibe & Subtle Felt Texture */}
@@ -105,7 +109,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <button
             onClick={() => {
               if (cloudUserName) {
-                if (window.confirm('Yakin ingin logout dari akun Google?')) onGoogleLogout();
+                setIsLogoutConfirmOpen(true);
               } else {
                 onGoogleLogin();
               }
@@ -204,6 +208,28 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           </button>
         </div>
       </main>
+
+      {isLogoutConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm px-4" role="dialog" aria-modal="true" aria-labelledby="logout-dialog-title">
+          <div className="w-full max-w-sm rounded-2xl border border-amber-500/40 bg-slate-950 p-6 shadow-[0_0_40px_rgba(245,158,11,0.18)]">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/30 bg-amber-500/10 text-amber-300">
+              <LogOut className="h-7 w-7" />
+            </div>
+            <h2 id="logout-dialog-title" className="text-center text-xl font-black text-amber-100">Keluar dari akun?</h2>
+            <p className="mt-2 text-center text-sm leading-relaxed text-stone-300">
+              Kamu akan logout dari akun Google <span className="font-bold text-white">{cloudUserName}</span>. Pastikan progres permainanmu sudah tersimpan.
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => setIsLogoutConfirmOpen(false)} className="flex items-center justify-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm font-bold text-stone-200 transition hover:bg-stone-800">
+                <X className="h-4 w-4" /> Batal
+              </button>
+              <button type="button" onClick={() => { setIsLogoutConfirmOpen(false); onGoogleLogout(); }} className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 px-4 py-3 text-sm font-black text-slate-950 transition hover:brightness-110 active:scale-95">
+                <LogOut className="h-4 w-4" /> Ya, logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="text-center text-[10px] text-stone-500 py-1">{cloudStatus}</div>
 
