@@ -50,17 +50,52 @@ import { LeaderboardPage } from './components/LeaderboardPage';
 import { recordLeaderboardScore } from './services/leaderboardService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './services/firebaseClient';
-import { signInWithGoogle, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile } from './services/firebaseCloudService';
+import { signInWithGoogle, completeGoogleRedirect, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile } from './services/firebaseCloudService';
 
 export default function App() {
   const [cloudUser, setCloudUser] = useState<import('firebase/auth').User | null>(null);
   const [cloudStatus, setCloudStatus] = useState('');
 
-  useEffect(() => onAuthStateChanged(auth, (user) => { setCloudUser(user); if (user) setCloudStatus('Login Google aktif'); else setCloudStatus('Belum login'); }), []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCloudUser(user);
+      if (user) setCloudStatus('Login Google aktif');
+      else setCloudStatus('Belum login');
+    });
+
+    // Resolve the result after Google redirects back to this app.
+    completeGoogleRedirect()
+      .then(async (user) => {
+        if (!user) return;
+        setCloudStatus('Google berhasil, menyiapkan profil...');
+        await loadCloudPlayerProfile(user);
+        setCloudStatus('Login Google aktif');
+      })
+      .catch((error) => {
+        console.error('Google redirect sign-in gagal:', error);
+        setCloudStatus(getGoogleLoginErrorMessage(error));
+      });
+
+    return unsubscribe;
+  }, []);
+
+  const getGoogleLoginErrorMessage = (error: unknown): string => {
+    const code = typeof error === 'object' && error !== null && 'code' in error
+      ? String((error as { code?: unknown }).code)
+      : '';
+    console.error('Detail error login Google:', code || error);
+    if (code.includes('unauthorized-domain')) return 'Domain game belum diizinkan di Firebase Authentication.';
+    if (code.includes('operation-not-allowed')) return 'Login Google belum aktif di Firebase Authentication.';
+    if (code.includes('popup-blocked')) return 'Popup diblokir browser. Coba izinkan popup atau gunakan browser Chrome.';
+    if (code.includes('network')) return 'Koneksi jaringan gagal saat login Google.';
+    if (code.includes('permission-denied')) return 'Login berhasil, tetapi akses profil Firestore ditolak. Periksa Security Rules.';
+    if (code.includes('redirect')) return 'Login Google gagal saat kembali ke game. Periksa Authorized domains di Firebase.';
+    return 'Login Google gagal. Coba lagi dan periksa konfigurasi Firebase.';
+  };
 
   const handleGoogleLogin = async () => {
     try { setCloudStatus('Menghubungkan Google...'); const user = await signInWithGoogle(); const profile = await loadCloudPlayerProfile(user); await saveCloudPlayerProfile(user, profile); setCloudStatus('Tersimpan di cloud'); }
-    catch (error) { console.error('Google sign-in gagal:', error); setCloudStatus('Login gagal. Periksa domain resmi dan konfigurasi Firebase.'); }
+    catch (error) { setCloudStatus(getGoogleLoginErrorMessage(error)); }
   };
   const handleGoogleLogout = async () => { try { await signOutPlayer(); setCloudStatus('Logout berhasil'); } catch (error) { console.error(error); setCloudStatus('Logout gagal'); } };
 
