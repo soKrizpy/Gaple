@@ -95,6 +95,7 @@ const DEFAULT_PLAYER_PROFILE: PlayerProfile = {
   highestRound: 1,
   highestStreak: 0,
   gamesPlayed: 0,
+  avatar: '🀄',
 };
 
 /**
@@ -185,7 +186,7 @@ export function recordLeaderboardScore(params: {
     roundReached: params.roundReached,
     streak: params.streak,
     timestamp: Date.now(),
-    avatar: '🀄',
+    avatar: updatedProfile.avatar || '🀄',
     isCurrentPlayer: true,
     favRelic: params.favRelicName || 'Korek Gas Toko',
   };
