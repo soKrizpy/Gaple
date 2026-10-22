@@ -113,6 +113,8 @@ export default function App() {
   const [shopRelics, setShopRelics] = useState<Relic[]>([]);
 
   // Board & Domino State (100% Solo)
+  // Batu Gorengan yang dibawa ke babak berikutnya.
+  const [pendingGorenganTile, setPendingGorenganTile] = useState<Domino | null>(null);
   const [hand, setHand] = useState<Domino[]>([]);
   const [boneyard, setBoneyard] = useState<Domino[]>([]);
   const [placedTiles, setPlacedTiles] = useState<PlacedTile[]>([]);
@@ -195,12 +197,19 @@ export default function App() {
 
   // Inisialisasi Game atau Babak Baru (100% Solo)
   const initGame = useCallback((nextRoundNum: number = 1, bonusScoreStart: number = 0) => {
-    const fullSet = shuffleDominos(createDominoSet());
+    // Jika Gorengan dibeli di Toko Ronda, bawa batu yang sudah menjadi balak
+    // ke babak berikutnya dan keluarkan batu asli dengan ID sama dari set.
+    const carriedTile = pendingGorenganTile;
+    const fullSet = shuffleDominos(
+      createDominoSet().filter((tile) => !carriedTile || tile.id !== carriedTile.id)
+    );
     isResolvingTurnRef.current = false;
 
-    // Solo Roguelike: 7 batu di tangan pemain, 21 batu di cadangan (boneyard)
-    const initialHand = fullSet.slice(0, 7);
-    const initialBoneyard = fullSet.slice(7);
+    // Tetap mulai dengan 7 batu: 6 acak + 1 batu Gorengan (jika tersedia).
+    const initialHand = fullSet.slice(0, carriedTile ? 6 : 7);
+    if (carriedTile) initialHand.push(carriedTile);
+    const initialBoneyard = fullSet.slice(carriedTile ? 6 : 7);
+    if (carriedTile) setPendingGorenganTile(null);
 
     setPosRonda({
       currentRound: nextRoundNum,
@@ -227,7 +236,7 @@ export default function App() {
     setGapleExplosionData(null);
     setRelicChoices([]);
     setPassiveNotice(null);
-  }, []);
+  }, [pendingGorenganTile]);
 
   // Memulai Permainan dari Menu Utama
   const handleStartGame = () => {
@@ -697,13 +706,16 @@ export default function App() {
         if (tile.id === tileId) {
           const maxPip = Math.max(tile.head, tile.tail);
           const targetPip = maxPip === 0 ? 6 : maxPip;
-          return {
+          const friedTile = {
             ...tile,
-            // Keep the physical tile ID stable to avoid duplicate keys / selection collisions.
+            // Keep the physical tile ID stable so the matching original is removed
+            // from the next round's domino set.
             head: targetPip,
             tail: targetPip,
             isDouble: true,
           };
+          setPendingGorenganTile(friedTile);
+          return friedTile;
         }
         return tile;
       })
