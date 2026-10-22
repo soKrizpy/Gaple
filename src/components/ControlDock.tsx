@@ -6,6 +6,8 @@ import {
   Trash2,
   Flame,
   ArrowLeftRight,
+  MoveLeft,
+  MoveRight,
   Zap,
   Layers,
   Sparkles,
@@ -61,6 +63,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   isPortrait,
   isCompactHeight = false,
 }) => {
+  const [actionPanelSide, setActionPanelSide] = useState<'left' | 'right'>('right');
   const isBoardEmpty = leftEnd === null || rightEnd === null;
 
   // Deteksi peningkatan streak untuk memicu animasi menyala dinamis saat kartu berhasil tersambung
@@ -241,12 +244,22 @@ export const ControlDock: React.FC<ControlDockProps> = ({
 
       {/* Chain Aksi Lanjutan untuk Kartu yang Dipilih (Pasang, Jimat, Buang) */}
       {selectedTile && (
-        <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-950/90 px-2.5 py-1.5 rounded-xl border border-amber-500/50 shadow-lg animate-in fade-in slide-in-from-bottom-1 duration-200">
-          {/* Info Batu Dipilih */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-stone-300">
-              Pilihan: <strong className="text-amber-300 font-mono text-sm">[{selectedTile.head}-{selectedTile.tail}]</strong>
-            </span>
+        <div className={`fixed top-1/2 -translate-y-1/2 ${actionPanelSide === 'left' ? 'left-2' : 'right-2'} z-[60] w-[min(42vw,168px)] flex flex-col items-stretch gap-2 bg-stone-950/95 backdrop-blur-md px-2 py-2 rounded-2xl border border-amber-500/60 shadow-2xl animate-in fade-in duration-200`}>
+          <div className="flex items-center justify-between gap-1 border-b border-stone-800 pb-1.5">
+            <span className="text-[10px] uppercase tracking-wide text-stone-400 font-bold">Batu Dipilih</span>
+            <button
+              type="button"
+              onClick={() => setActionPanelSide((side) => side === 'left' ? 'right' : 'left')}
+              className="flex items-center gap-1 rounded-lg px-1.5 py-1 bg-stone-800 hover:bg-stone-700 text-amber-300 text-[10px] font-bold border border-stone-700"
+              title="Pindahkan panel aksi ke sisi layar lain"
+              aria-label="Pindahkan panel aksi ke sisi layar lain"
+            >
+              {actionPanelSide === 'left' ? <MoveRight className="w-3 h-3" /> : <MoveLeft className="w-3 h-3" />}
+              <span>{actionPanelSide === 'left' ? 'Kanan' : 'Kiri'}</span>
+            </button>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <strong className="text-amber-300 font-mono text-base">[{selectedTile.head}-{selectedTile.tail}]</strong>
             {selectedTile.isDouble && (
               <span className="px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">
                 Balak (×2)
@@ -254,8 +267,8 @@ export const ControlDock: React.FC<ControlDockProps> = ({
             )}
           </div>
 
-          {/* Deretan Chain Aksi Lanjutan: Pasang, Jimat, Buang */}
-          <div className="flex flex-wrap items-center gap-1.5 ml-auto">
+          {/* Aksi disusun vertikal agar mudah dijangkau di layar sentuh */}
+          <div className="flex flex-col items-stretch gap-1.5 w-full">
             {/* 1. Opsi Pasang ke Meja */}
             {isBoardEmpty ? (
               <button
@@ -263,7 +276,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                   sounds.playTileClack();
                   onPlaceTile('left');
                 }}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer"
+                className="w-full justify-center px-2 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Pasang Pertama</span>
@@ -276,7 +289,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                       sounds.playTileClack();
                       onPlaceTile('left');
                     }}
-                    className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-emerald-400/60"
+                    className="w-full justify-center px-2 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-emerald-400/60"
                     title={`Pasang menyambung mata ${leftEnd} di kiri meja`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -290,7 +303,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                       sounds.playTileClack();
                       onPlaceTile('right');
                     }}
-                    className="px-2.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-sky-400/60"
+                    className="w-full justify-center px-2 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-sky-400/60"
                     title={`Pasang menyambung mata ${rightEnd} di kanan meja`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -308,7 +321,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                   onToggleWildcard();
                 }}
                 disabled={wildcardUsedThisRound && !wildcardActive}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer border ${
+                className={`w-full justify-center px-2 py-2 rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer border ${
                   wildcardActive
                     ? 'bg-amber-500 text-slate-950 border-amber-300 ring-2 ring-amber-400 shadow-md font-black'
                     : wildcardUsedThisRound
@@ -329,7 +342,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                 onDiscardTile(selectedTile);
               }}
               disabled={discardsLeft <= 0}
-              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all border ${
+              className={`w-full justify-center px-2 py-2 rounded-xl text-xs font-bold flex items-center gap-1 transition-all border ${
                 discardsLeft > 0
                   ? 'bg-rose-700 hover:bg-rose-600 text-white border-rose-500 shadow-md active:scale-95 cursor-pointer'
                   : 'bg-stone-800/80 text-stone-500 border-stone-700/60 cursor-not-allowed'
