@@ -25,7 +25,7 @@ export const SHOP_CONSUMABLES: ConsumableItem[] = [
   {
     id: 'item_gorengan',
     name: 'Gorengan Hangat',
-    desc: 'Ubah salah satu batu di tanganmu menjadi batu Balak kembar pilihan!',
+    desc: 'Ubah satu batu di tangan menjadi balak dengan nilai mengikuti angka tertinggi pada batu itu.',
     icon: '🥟',
     price: 3,
     effectType: 'make_balak',
@@ -39,10 +39,10 @@ export const SHOP_CONSUMABLES: ConsumableItem[] = [
     effectType: 'add_discards',
   },
   {
-    id: 'item_rokok',
-    name: 'Sebungkus Kretek',
-    desc: 'Memberikan modal skor awal +150 Poin di babak berikutnya.',
-    icon: '🚬',
+    id: 'item_baterai',
+    name: 'Baterai Cadangan',
+    desc: 'Memberikan modal skor awal +150 poin di babak berikutnya.',
+    icon: '🔋',
     price: 4,
     effectType: 'instant_score',
   },
@@ -222,7 +222,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
           </div>
         </div>
 
-        {/* Bagian 2: Barang Konsumsi (Gorengan, Es Teh, Rokok) */}
+        {/* Bagian 2: Barang Konsumsi (Gorengan, Es Teh, Baterai) */}
         <div className="flex flex-col gap-2 pt-1 border-t border-stone-800/80">
           <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-400 uppercase tracking-wider">
             <Utensils className="w-4 h-4" />
