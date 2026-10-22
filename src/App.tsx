@@ -815,6 +815,10 @@ export default function App() {
           onOpenLeaderboard={handleOpenLeaderboard}
           unclaimedMissionsCount={unclaimedMissionsCount}
           coins={coins}
+          cloudUserName={cloudUser?.displayName || null}
+          cloudStatus={cloudStatus}
+          onGoogleLogin={handleGoogleLogin}
+          onGoogleLogout={handleGoogleLogout}
           isMuted={isMuted}
           onToggleMute={() => {
             sounds.isMuted = !isMuted;
