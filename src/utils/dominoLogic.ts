@@ -81,24 +81,24 @@ export const AVAILABLE_RELICS: Relic[] = [
   {
     id: 'jimat_asbak',
     name: 'Asbak Penuh',
-    desc: 'Mengalikan total skor akhir sebesar 1.5× jika menutup ronde dengan angka 0 (kosong).',
+    desc: 'Batu yang memuat angka 0 memberi +25 Titik dan bonus skor 1,5× pada langkah itu.',
     icon: '🚬',
     rarity: 'rare',
     chipsBonus: 25,
     multBonus: 0,
     multMultiplier: 1.5,
-    conditionDescription: 'Aktif jika batu penutup atau ujung meja memiliki angka 0',
+    conditionDescription: 'Aktif saat memasang batu yang memuat angka 0; bonus 1,5× berlaku pada langkah itu.',
   },
   {
     id: 'jimat_kipas',
     name: 'Kipas Sate',
-    desc: 'Mengizinkan pemain menyambung batu apa saja sekali per ronde (Batu Sakti / Wildcard).',
+    desc: 'Sekali per ronde, aktifkan Wildcard untuk menyambung batu apa saja. Aktivasi memberi +10 Titik dan +1 Pengali pada langkah tersebut.',
     icon: '🪭',
     rarity: 'legendary',
     chipsBonus: 30,
     multBonus: 1,
     isWildcard: true,
-    conditionDescription: 'Klik tombol Kipas Sate untuk menyambung bebas tanpa peduli angka!',
+    conditionDescription: 'Aktifkan tombol Kipas Sate sebelum memasang batu untuk sambungan bebas dan bonus skor.',
   },
   {
     id: 'jimat_akik',
@@ -123,13 +123,13 @@ export const AVAILABLE_RELICS: Relic[] = [
   {
     id: 'jimat_gaple',
     name: 'Gong Kunci Gaple',
-    desc: 'Ledakan Meja Gaple (Deadlock) dilipatgandakan menjadi 5× total sisa titik di tangan!',
+    desc: 'Ledakan Meja Gaple (Deadlock) memakai pengali 5× total sisa titik di tangan (dasar 3×).',
     icon: '🔔',
     rarity: 'legendary',
     chipsBonus: 50,
     multBonus: 5,
     multMultiplier: 2,
-    conditionDescription: 'Aktif saat terjadi Gaple / Kunci Meja',
+    conditionDescription: 'Mengubah pengali ledakan Gaple dari 3× menjadi 5×.',
   },
 ];
 
@@ -216,7 +216,7 @@ export function calculateGapleExplosionScore(hand: Domino[], relics: Relic[] = [
  * Efek Jimat Warkop:
  * 1. Korek Gas Toko: Setiap batu berangka 6 -> +15 Chips & +3 Mult
  * 2. Cangkir Kopi Hitam: Memasang batu Balak -> Kuota pasang bertambah +1!
- * 3. Asbak Penuh: Menutup dengan angka 0 -> 1.5x pengali skor
+ * 3. Asbak Penuh: Batu yang memuat 0 memberi +25 Chips dan skor langkah ×1.5
  * 4. Kipas Sate: Wildcard sambung bebas
  * 5. Batu Akik Merah: Titik ganjil -> Pengali acak antara +2 hingga +8 Mult!
  * 6. Balak Kembar Sakti: +25 Chips & +2 Mult
@@ -225,7 +225,8 @@ export function calculateMoveScorePosRonda(
   tile: Domino,
   currentStreak: number,
   relics: Relic[],
-  handRemainingCount: number
+  handRemainingCount: number,
+  wildcardActive: boolean = false
 ): {
   chips: number;            // Titik batu
   mult: number;             // Pengali kombo
@@ -276,7 +277,7 @@ export function calculateMoveScorePosRonda(
       }
     }
 
-    // 3. Asbak Penuh: Mengalikan skor akhir sebesar 1.5× jika menutup ronde dengan angka 0
+    // 3. Asbak Penuh: bonus berlaku pada langkah batu bernilai 0 (bukan kondisi tangan kosong).
     if (relic.id === 'jimat_asbak') {
       const hasZero = tile.head === 0 || tile.tail === 0;
       if (hasZero) {
@@ -286,8 +287,8 @@ export function calculateMoveScorePosRonda(
       }
     }
 
-    // 4. Kipas Sate: Wildcard sambung bebas
-    if (relic.id === 'jimat_kipas') {
+    // 4. Kipas Sate: bonus hanya saat wildcard benar-benar digunakan.
+    if (relic.id === 'jimat_kipas' && wildcardActive) {
       chips += 10;
       mult += 1;
       triggeredRelics.push(relic.id);
@@ -315,8 +316,8 @@ export function calculateMoveScorePosRonda(
 
   let totalMoveScore = chips * mult;
 
-  // Jika Asbak Penuh aktif dan ini batu penutup (sisa batu 0), kali 1.5x
-  if (hasAsbakTrigger && handRemainingCount === 0) {
+  // Asbak Penuh memberi bonus 1.5× pada langkah yang memuat angka 0.
+  if (hasAsbakTrigger) {
     totalMoveScore = Math.round(totalMoveScore * 1.5);
   }
 
