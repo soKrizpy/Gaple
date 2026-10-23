@@ -51,7 +51,7 @@ export interface PosRondaState {
   targetScore: number;  // Target skor babak ini (300, 800, 2000...)
   playsLeft: number;    // Kuota pasang batu (Hands: default 4)
   discardsLeft: number; // Kuota buang batu (Discards: default 3)
-  streak: number;       // Rantai sambungan tanpa putus (+1 Mult per streak)
+  streak: number;       // Chain Combo: bertambah saat balak legal menyambung; reset saat discard
   roundScore: number;   // Skor yang terkumpul di babak ini
   wildcardActive: boolean; // Aktif saat pemain mengaktifkan efek Kipas Sate
   wildcardUsedThisRound: boolean; // Kipas Sate hanya bisa 1x per ronde
