@@ -210,8 +210,9 @@ export function calculateGapleExplosionScore(hand: Domino[], relics: Relic[] = [
  *
  * Aturan Dasar:
  * - Chips dasar = jumlah titik pada batu tersebut.
- * - Mult dasar bertambah +1 setiap kali berhasil membuat rantai sambungan tanpa putus (streak).
- * - Bonus Balak: Jika memasang batu Balak (kembar), berikan pengganda instan: Mult × 2!
+ * - Streak adalah Chain Combo: hanya balak yang benar-benar cocok dengan ujung meja menaikkan streak.
+ * - Streak yang sudah terkumpul bertahan saat batu biasa dipasang; discard memutusnya di App.
+ * - Bonus Balak: semua balak tetap memberi pengganda instan Mult × 2.
  *
  * Efek Jimat Warkop:
  * 1. Korek Gas Toko: Setiap batu berangka 6 -> +15 Chips & +3 Mult
@@ -240,9 +241,9 @@ export function calculateMoveScorePosRonda(
   // 1. Titik Dasar = jumlah titik pada batu tersebut
   let chips = tile.head + tile.tail;
   
-  // 2. Streak memberi bonus nyata: +1 Mult per sambungan beruntun,
-  //    lalu bonus ekstra +2 Mult pada streak ke-3, 6, 9, dan seterusnya.
-  //    App memutus streak saat pemain membuang batu.
+  // 2. Chain Combo memberi bonus nyata: +1 Mult per tingkat streak,
+  //    ditambah +2 Mult pada tingkat ke-3, 6, 9, dan seterusnya.
+  //    App hanya menaikkan streak saat balak cocok dengan ujung meja, dan reset saat discard.
   const streakMilestoneBonus = Math.floor(currentStreak / 3) * 2;
   let mult = 1 + currentStreak + streakMilestoneBonus;
 
