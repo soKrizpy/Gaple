@@ -50,7 +50,7 @@ import { LeaderboardPage } from './components/LeaderboardPage';
 import { recordLeaderboardScore, savePlayerProfile } from './services/leaderboardService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './services/firebaseClient';
-import { signInWithGoogle, completeGoogleRedirect, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile } from './services/firebaseCloudService';
+import { signInWithGoogle, completeGoogleRedirect, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile, submitCloudLeaderboardEntry } from './services/firebaseCloudService';
 
 export default function App() {
   const [cloudUser, setCloudUser] = useState<import('firebase/auth').User | null>(null);
