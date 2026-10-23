@@ -61,20 +61,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
       {/* Top Header Bar: Clean & Minimalist */}
       <header className="relative z-10 w-full max-w-4xl mx-auto px-4 py-3 flex items-center justify-between border-b border-stone-800/80 bg-slate-950/70 backdrop-blur-md">
-        <div className="flex items-center gap-2.5">
-          <img
-            src={balakutakLogo}
-            alt="Balakutak Master Logo"
-            className="w-9 h-9 rounded-xl object-cover border border-amber-400/70 shadow-md ring-2 ring-amber-500/30"
-            referrerPolicy="no-referrer"
-          />
-          <span className="font-extrabold text-sm tracking-wider text-amber-200 uppercase">
-            Balakutak Master
-          </span>
-        </div>
-
-        {/* Dompet & profil tetap sejajar; kontrol lain ditumpuk di bawah ikon suara */}
-        <div className="flex items-center gap-2">
+        {/* Header ringkas: semua kontrol utama sejajar tanpa logo/judul kecil */}
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 w-full">
           {/* Dompet Koin */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
             <Coins className="w-4 h-4 text-amber-400" />
@@ -101,8 +89,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             <span className="hidden sm:inline truncate">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
           </button>
 
-          {/* Audio di atas; Papan Skor dan Misi Harian tersusun vertikal di bawahnya */}
-          <div className="flex flex-col items-center gap-1">
+          {/* Kontrol suara, leaderboard, dan misi harian sejajar di header */}
+          <div className="flex items-center gap-1.5">
             <button
               onClick={onToggleMute}
               title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
