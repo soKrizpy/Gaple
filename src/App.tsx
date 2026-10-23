@@ -363,7 +363,7 @@ export default function App() {
       // Catat ke Papan Skor (Leaderboard)
       // One leaderboard entry represents a completed run, not every successful round.
       if (!isWon) {
-        const savedResult = recordLeaderboardScore({
+        recordLeaderboardScore({
           score: sessionFinalScore,
           roundReached: finalPosRonda.currentRound,
           streak: finalPosRonda.streak,
@@ -385,7 +385,7 @@ export default function App() {
         }
       }
     },
-    [activeRelics, recordMission, rollShopRelics]
+    [activeRelics, cloudUser, recordMission, rollShopRelics]
   );
 
   // Navigasi Buka Halaman Leaderboard
@@ -949,6 +949,7 @@ export default function App() {
         }}
         currentScore={score}
         currentRound={posRonda.currentRound}
+        cloudUser={cloudUser}
       />
     );
   }
