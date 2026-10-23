@@ -162,6 +162,7 @@ export async function loadCloudLeaderboard(maxEntries = 30): Promise<Leaderboard
     const data: DocumentData = item.data();
     return {
       id: item.id,
+      userId: typeof data.userId === 'string' ? data.userId : undefined,
       name: typeof data.name === 'string' ? data.name : 'Pemain Warkop',
       title: typeof data.title === 'string' ? data.title : 'Pemain Setia Warkop',
       score: finiteNonNegative(data.score, 0),
