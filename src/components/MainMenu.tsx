@@ -59,70 +59,75 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       <div className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(ellipse_80%_80%_at_50%_-10%,rgba(245,158,11,0.28),rgba(0,0,0,0))]" />
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_60%_60%_at_50%_110%,rgba(16,185,129,0.22),rgba(0,0,0,0))]" />
 
-      {/* Top Header Bar: Clean & Minimalist */}
-      <header className="relative z-10 w-full max-w-4xl mx-auto px-4 py-3 flex items-center justify-between border-b border-stone-800/80 bg-slate-950/70 backdrop-blur-md">
-        {/* Header ringkas: semua kontrol utama sejajar tanpa logo/judul kecil */}
-        <div className="flex items-center justify-end gap-1.5 sm:gap-2 w-full">
-          {/* Dompet Koin */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
-            <Coins className="w-4 h-4 text-amber-400" />
+      {/* Top Header Bar: akun Google di kiri, kontrol permainan di kanan */}
+      <header className="relative z-10 w-full max-w-4xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-3 border-b border-stone-800/80 bg-slate-950/70 backdrop-blur-md">
+        {/* Akun Google — dipisahkan di sisi kiri */}
+        <button
+          onClick={() => {
+            if (cloudUserName) {
+              setIsLogoutConfirmOpen(true);
+            } else {
+              onGoogleLogin();
+            }
+          }}
+          title={cloudUserName ? 'Klik untuk logout dari akun Google' : cloudStatus}
+          aria-label={cloudUserName ? `Akun Google: ${cloudUserName}. Klik untuk logout` : 'Login dengan Google'}
+          className="min-w-0 max-w-[150px] sm:max-w-[190px] h-10 px-2 sm:px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-2 cursor-pointer active:scale-95 text-xs font-bold"
+        >
+          {cloudUserPhotoURL ? (
+            <img src={cloudUserPhotoURL} alt="Foto profil Google" className="w-7 h-7 shrink-0 rounded-full object-cover border border-emerald-300/60" referrerPolicy="no-referrer" />
+          ) : (
+            <UserCircle className="w-5 h-5 shrink-0" />
+          )}
+          <span className="truncate">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
+        </button>
+
+        {/* Kontrol permainan — ukuran tinggi seragam dan urutan tetap */}
+        <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
+          {/* Koin */}
+          <div
+            title={`Saldo koin: ${coins.toLocaleString('id-ID')}`}
+            aria-label={`Saldo koin: ${coins.toLocaleString('id-ID')}`}
+            className="h-10 min-w-10 px-2 sm:px-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center justify-center gap-1.5"
+          >
+            <Coins className="w-4 h-4 shrink-0 text-amber-400" />
             <span className="font-mono font-black text-xs md:text-sm">{coins.toLocaleString('id-ID')}</span>
           </div>
 
-          {/* Login Google / status cloud — beri ruang agar foto profil terlihat jelas */}
+          {/* Leaderboard */}
           <button
-            onClick={() => {
-              if (cloudUserName) {
-                setIsLogoutConfirmOpen(true);
-              } else {
-                onGoogleLogin();
-              }
-            }}
-            title={cloudUserName ? 'Klik untuk logout dari akun Google' : cloudStatus}
-            className="max-w-[140px] px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs font-bold"
+            onClick={onOpenLeaderboard}
+            title="Papan Skor & Klasemen Juara"
+            aria-label="Papan Skor & Klasemen Juara"
+            className="w-10 h-10 shrink-0 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 transition-all flex items-center justify-center cursor-pointer active:scale-95"
           >
-            {cloudUserPhotoURL ? (
-              <img src={cloudUserPhotoURL} alt="Foto profil Google" className="w-7 h-7 shrink-0 rounded-full object-cover border border-emerald-300/60" referrerPolicy="no-referrer" />
-            ) : (
-              <UserCircle className="w-5 h-5 shrink-0" />
-            )}
-            <span className="hidden sm:inline truncate">{cloudUserName ? cloudUserName.slice(0, 12) : 'Login Google'}</span>
+            <Trophy className="w-4 h-4 text-amber-400" />
           </button>
 
-          {/* Kontrol suara, leaderboard, dan misi harian sejajar di header */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={onToggleMute}
-              title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
-              aria-label={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
-              className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-300 hover:text-white transition-all cursor-pointer active:scale-95"
-            >
-              {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
-            </button>
+          {/* Misi Harian */}
+          <button
+            onClick={onOpenMissions}
+            title="Misi Harian"
+            aria-label="Misi Harian"
+            className="relative w-10 h-10 shrink-0 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-200 transition-all flex items-center justify-center cursor-pointer hover:border-amber-500/50 active:scale-95"
+          >
+            <ListTodo className="w-4 h-4 text-amber-400" />
+            {unclaimedMissionsCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-mono font-black text-[9px] flex items-center justify-center animate-bounce shadow">
+                {unclaimedMissionsCount}
+              </span>
+            )}
+          </button>
 
-            <button
-              onClick={onOpenLeaderboard}
-              title="Papan Skor & Klasemen Juara"
-              aria-label="Papan Skor & Klasemen Juara"
-              className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 transition-all flex items-center justify-center cursor-pointer active:scale-95"
-            >
-              <Trophy className="w-4 h-4 text-amber-400" />
-            </button>
-
-            <button
-              onClick={onOpenMissions}
-              title="Misi Harian"
-              aria-label="Misi Harian"
-              className="relative p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-200 transition-all flex items-center justify-center cursor-pointer hover:border-amber-500/50 active:scale-95"
-            >
-              <ListTodo className="w-4 h-4 text-amber-400" />
-              {unclaimedMissionsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-mono font-black text-[9px] flex items-center justify-center animate-bounce shadow">
-                  {unclaimedMissionsCount}
-                </span>
-              )}
-            </button>
-          </div>
+          {/* Sound */}
+          <button
+            onClick={onToggleMute}
+            title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
+            aria-label={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
+            className="w-10 h-10 shrink-0 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700/80 text-stone-300 hover:text-white transition-all flex items-center justify-center cursor-pointer active:scale-95"
+          >
+            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+          </button>
         </div>
       </header>
 
