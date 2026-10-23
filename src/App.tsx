@@ -608,7 +608,10 @@ export default function App() {
 
     // Animasi Resolusi Skor Terapung (Anime.js)
     setCurrentChips(scoreCalc.chips);
-    setCurrentMult(scoreCalc.mult);
+    // Keep the displayed Chips × Mult aligned with the actual step score.
+    // Asbak's 1.5× is applied after the base calculation, so reflect it in the
+    // resolution display as an effective multiplier for this step only.
+    setCurrentMult(scoreCalc.mult * (scoreCalc.hasAsbakTrigger ? 1.5 : 1));
 
     animateScoreResolution(
       scoreCalc.chips,
