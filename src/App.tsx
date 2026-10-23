@@ -47,7 +47,7 @@ import { PauseModal } from './components/PauseModal';
 import { DailyMissionsModal } from './components/DailyMissionsModal';
 import { RewardedAdModal } from './components/RewardedAdModal';
 import { LeaderboardPage } from './components/LeaderboardPage';
-import { recordLeaderboardScore } from './services/leaderboardService';
+import { recordLeaderboardScore, savePlayerProfile } from './services/leaderboardService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './services/firebaseClient';
 import { signInWithGoogle, completeGoogleRedirect, signOutPlayer, loadCloudPlayerProfile, saveCloudPlayerProfile } from './services/firebaseCloudService';
