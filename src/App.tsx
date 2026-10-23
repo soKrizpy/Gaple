@@ -554,10 +554,21 @@ export default function App() {
       nextBoneyard = restBoneyard;
     }
 
+    // Chain Combo hanya naik saat balak benar-benar menyambung ke ujung meja.
+    // Wildcard yang memaksa sambungan tidak cocok tidak boleh memicu combo.
+    const isLegalBalakCombo =
+      !isFirstTile &&
+      tile.isDouble &&
+      (tile.head === leftEnd || tile.head === rightEnd);
+
+    // Balak pemicu combo langsung memakai tingkat streak berikutnya untuk skor langkah ini.
+    // Pemasangan biasa mempertahankan streak dan tidak menaikkannya.
+    const streakForScore = isLegalBalakCombo ? posRonda.streak + 1 : posRonda.streak;
+
     // Kalkulasi Skor Pos Ronda ala Balatro
     const scoreCalc = calculateMoveScorePosRonda(
       tile,
-      posRonda.streak,
+      streakForScore,
       activeRelics,
       nextHand.length,
       posRonda.wildcardActive
@@ -583,7 +594,7 @@ export default function App() {
     if (tile.isDouble) recordMission('place_balak', 1);
     if (posRonda.wildcardActive) recordMission('use_kipas', 1);
     const newPlaysLeft = posRonda.playsLeft - 1 + scoreCalc.bonusPlaysGranted;
-    const newStreak = posRonda.streak + 1;
+    const newStreak = isLegalBalakCombo ? posRonda.streak + 1 : posRonda.streak;
     const newTargetScore = posRonda.targetScore;
 
     const nextPosRondaState: PosRondaState = {
@@ -651,7 +662,7 @@ export default function App() {
     setHand(nextHand);
     setBoneyard(nextBoneyard);
     setSelectedTile(null);
-    // Membuang batu memutus rantai: bonus streak harus dibangun lagi dengan pasang beruntun.
+    // Membuang batu memutus Chain Combo; combo balak harus dibangun lagi.
     setPosRonda((prev) => ({
       ...prev,
       discardsLeft: prev.discardsLeft - 1,
