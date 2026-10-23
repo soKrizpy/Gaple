@@ -363,12 +363,26 @@ export default function App() {
       // Catat ke Papan Skor (Leaderboard)
       // One leaderboard entry represents a completed run, not every successful round.
       if (!isWon) {
-        recordLeaderboardScore({
+        const savedResult = recordLeaderboardScore({
           score: sessionFinalScore,
           roundReached: finalPosRonda.currentRound,
           streak: finalPosRonda.streak,
           favRelicName: activeRelics[0]?.name,
         });
+        if (cloudUser) {
+          loadCloudPlayerProfile(cloudUser)
+            .then((profile) => submitCloudLeaderboardEntry(cloudUser, {
+              score: sessionFinalScore,
+              roundReached: finalPosRonda.currentRound,
+              streak: finalPosRonda.streak,
+              favRelic: activeRelics[0]?.name || 'Korek Gas Toko',
+            }, profile))
+            .then(() => setCloudStatus('Skor tersimpan ke akun Google'))
+            .catch((error) => {
+              console.error('Gagal menyimpan skor leaderboard ke cloud:', error);
+              setCloudStatus('Skor lokal tersimpan; sinkronisasi cloud gagal');
+            });
+        }
       }
     },
     [activeRelics, recordMission, rollShopRelics]
