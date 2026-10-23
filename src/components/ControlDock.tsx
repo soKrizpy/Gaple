@@ -72,14 +72,15 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   const prevStreakRef = useRef(streak);
 
   useEffect(() => {
-    if (streak > prevStreakRef.current && streak > 0) {
+    const previousStreak = prevStreakRef.current;
+    prevStreakRef.current = streak;
+    if (streak > previousStreak && streak > 0) {
       setIsJustConnected(true);
       const timer = setTimeout(() => {
         setIsJustConnected(false);
       }, 950);
       return () => clearTimeout(timer);
     }
-    prevStreakRef.current = streak;
   }, [streak]);
 
   const isTilePlayable = (tile: Domino) => {
@@ -186,7 +187,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                     : '0 0 10px #fff, 0 0 20px #facc15, 0 0 35px #ef4444, 0 0 50px #f43f5e',
               }}
             >
-              Streak:
+              Combo:
             </span>
 
             <strong
@@ -203,6 +204,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
                     ? '0 0 12px #fde047, 0 0 24px #f59e0b, 0 0 36px #d97706'
                     : '0 0 14px #fff, 0 0 25px #facc15, 0 0 40px #ef4444, 0 0 60px #f43f5e',
               }}
+              title="Combo naik saat balak menyambung secara legal; buang batu untuk mereset."
             >
               +{streak}
             </strong>
