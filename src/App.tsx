@@ -68,7 +68,8 @@ export default function App() {
       .then(async (user) => {
         if (!user) return;
         setCloudStatus('Google berhasil, menyiapkan profil...');
-        await loadCloudPlayerProfile(user);
+        const profile = await loadCloudPlayerProfile(user);
+        savePlayerProfile(profile);
         setCloudStatus('Login Google aktif');
       })
       .catch((error) => {
