@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import type { User } from 'firebase/auth';
 import balakutakLogo from '../assets/images/balakutak_master_logo_1792665905566.jpg';
 import {
   Trophy,
@@ -33,18 +34,21 @@ import {
   getTwitterShareUrl,
   getTelegramShareUrl,
 } from '../services/leaderboardService';
+import { loadCloudPlayerProfile, saveCloudPlayerProfile, loadCloudLeaderboard } from '../services/firebaseCloudService';
 import { sounds } from '../utils/soundEffects';
 
 interface LeaderboardPageProps {
   onBack: () => void;
   currentScore?: number;
   currentRound?: number;
+  cloudUser?: User | null;
 }
 
 export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
   onBack,
   currentScore = 0,
   currentRound = 1,
+  cloudUser = null,
 }) => {
   const [timeframe, setTimeframe] = useState<'all_time' | 'weekly' | 'daily'>('all_time');
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
@@ -66,25 +70,74 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   useEffect(() => {
-    setEntries(getFilteredLeaderboard(timeframe));
-  }, [timeframe]);
+    let cancelled = false;
+    const refreshEntries = async () => {
+      const localEntries = getFilteredLeaderboard(timeframe);
+      if (!cloudUser) {
+        if (!cancelled) setEntries(localEntries);
+        return;
+      }
+      try {
+        const [profile, cloudEntries] = await Promise.all([
+          loadCloudPlayerProfile(cloudUser),
+          loadCloudLeaderboard(30),
+        ]);
+        if (cancelled) return;
+        const syncedProfile = savePlayerProfile(profile);
+        setPlayerProfile(syncedProfile);
+        setEditedName(syncedProfile.nickname);
+        const cloudRows = cloudEntries.map((entry) => ({
+          ...entry,
+          isCurrentPlayer: entry.userId === cloudUser.uid,
+        }));
+        const merged = [...cloudRows, ...localEntries.filter((entry) => !entry.isCurrentPlayer)];
+        const deduped = merged.filter((entry, index, list) =>
+          list.findIndex((candidate) => candidate.id === entry.id) === index
+        );
+        setEntries(deduped.sort((a, b) => b.score - a.score).slice(0, 30));
+      } catch (error) {
+        console.error('Gagal memuat leaderboard cloud:', error);
+        if (!cancelled) setEntries(localEntries);
+      }
+    };
+    void refreshEntries();
+    return () => { cancelled = true; };
+  }, [timeframe, cloudUser]);
 
-  const handleSaveAvatar = (avatar: string) => {
+  const handleSaveAvatar = async (avatar: string) => {
     sounds.playTileClack();
-    const updated = savePlayerProfile({ avatar });
+    let updated = savePlayerProfile({ avatar });
+    if (cloudUser) {
+      try {
+        updated = await saveCloudPlayerProfile(cloudUser, { ...updated, avatar });
+        savePlayerProfile(updated);
+      } catch (error) {
+        console.error('Gagal menyimpan avatar ke akun Google:', error);
+      }
+    }
     setPlayerProfile(updated);
     setIsAvatarPickerOpen(false);
-    setEntries(getFilteredLeaderboard(timeframe).map((entry) => entry.isCurrentPlayer ? { ...entry, avatar } : entry));
+    setEntries((current) => current.map((entry) => entry.isCurrentPlayer ? { ...entry, avatar } : entry));
   };
 
-  const handleSaveNickname = () => {
+  const handleSaveNickname = async () => {
     sounds.playTileClack();
     const cleanName = editedName.trim() || 'Pemain Warkop';
-    const updated = savePlayerProfile({ nickname: cleanName });
+    let updated = savePlayerProfile({ nickname: cleanName });
+    if (cloudUser) {
+      try {
+        updated = await saveCloudPlayerProfile(cloudUser, { ...updated, nickname: cleanName });
+        savePlayerProfile(updated);
+      } catch (error) {
+        console.error('Gagal menyimpan nickname ke akun Google:', error);
+      }
+    }
     setPlayerProfile(updated);
+    setEditedName(updated.nickname);
     setIsEditingName(false);
-    // Refresh entries so new name reflects
-    setEntries(getFilteredLeaderboard(timeframe));
+    setEntries((current) => current.map((entry) => entry.isCurrentPlayer
+      ? { ...entry, name: updated.nickname, avatar: updated.avatar || entry.avatar }
+      : entry));
   };
 
   const handleShareClick = (entry: LeaderboardEntry, rank?: number) => {
@@ -517,7 +570,7 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                 </button>
               ))}
             </div>
-            <p className="mt-4 text-[11px] text-stone-500">Pilihan tersimpan otomatis di perangkat ini.</p>
+            <p className="mt-4 text-[11px] text-stone-500">{cloudUser ? 'Nama dan avatar disinkronkan ke akun Google.' : 'Pilihan tersimpan di perangkat ini. Login Google untuk menyinkronkan.'}</p>
           </div>
         </div>
       )}
