@@ -102,6 +102,7 @@ export interface LeaderboardEntry {
   avatar: string;
   isCurrentPlayer?: boolean;
   favRelic?: string;
+  userId?: string;
 }
 
 export interface PlayerProfile {
